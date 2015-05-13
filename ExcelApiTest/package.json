@@ -1,0 +1,15 @@
+{
+  "name": "ExcelApiTest",
+  "version": "1.0.0",
+  "description": "PoC for Excel MediaTypeFormatter for WebAPI",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Jørn Andre Sundt",
+  "license": "ISC",
+  "devDependencies": {
+    "bower": "^1.4.1",
+    "tsd": "^0.5.7"
+  }
+}
