@@ -120,6 +120,19 @@
     <Reference Include="System.EnterpriseServices" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="bower_components\bootstrap-switch\.gitignore" />
+    <Content Include="bower_components\bootstrap-switch\dist\css\bootstrap2\bootstrap-switch.css" />
+    <Content Include="bower_components\bootstrap-switch\dist\css\bootstrap2\bootstrap-switch.min.css" />
+    <Content Include="bower_components\bootstrap-switch\dist\css\bootstrap3\bootstrap-switch.css" />
+    <Content Include="bower_components\bootstrap-switch\dist\css\bootstrap3\bootstrap-switch.min.css" />
+    <Content Include="bower_components\bootstrap-switch\dist\js\bootstrap-switch.js" />
+    <Content Include="bower_components\bootstrap-switch\dist\js\bootstrap-switch.min.js" />
+    <Content Include="bower_components\bootstrap-switch\documentation-2.html" />
+    <Content Include="bower_components\bootstrap-switch\events.html" />
+    <Content Include="bower_components\bootstrap-switch\examples.html" />
+    <Content Include="bower_components\bootstrap-switch\main.html" />
+    <Content Include="bower_components\bootstrap-switch\methods.html" />
+    <Content Include="bower_components\bootstrap-switch\options.html" />
     <Content Include="bower_components\bootstrap\dist\css\bootstrap-theme.css" />
     <Content Include="bower_components\bootstrap\dist\css\bootstrap-theme.min.css" />
     <Content Include="bower_components\bootstrap\dist\css\bootstrap.css" />
@@ -403,8 +416,23 @@
     <Content Include="bower_components\knockoutjs\LICENSE" />
     <Content Include="bower_components\knockoutjs\package.json" />
     <Content Include="bower_components\knockoutjs\README.md" />
-    <None Include="Properties\PublishProfiles\excelapi - FTP.pubxml" />
-    <None Include="Properties\PublishProfiles\excelapi - Web Deploy.pubxml" />
+    <Content Include="bower_components\bootstrap-switch\.bower.json" />
+    <Content Include="bower_components\bootstrap-switch\.bowerrc" />
+    <Content Include="bower_components\bootstrap-switch\bower.json" />
+    <Content Include="bower_components\bootstrap-switch\CHANGELOG.md" />
+    <Content Include="bower_components\bootstrap-switch\karma.json" />
+    <Content Include="bower_components\bootstrap-switch\LICENSE" />
+    <Content Include="bower_components\bootstrap-switch\README.md" />
+    <Content Include="bower_components\bootstrap-switch\src\coffee\bootstrap-switch.coffee" />
+    <Content Include="bower_components\bootstrap-switch\src\coffee\bootstrap-switch.tests.coffee" />
+    <Content Include="bower_components\bootstrap-switch\src\less\bootstrap2\bootstrap-switch.less" />
+    <Content Include="bower_components\bootstrap-switch\src\less\bootstrap2\build.less" />
+    <Content Include="bower_components\bootstrap-switch\src\less\bootstrap2\mixins.less" />
+    <Content Include="bower_components\bootstrap-switch\src\less\bootstrap2\variables.less" />
+    <Content Include="bower_components\bootstrap-switch\src\less\bootstrap3\bootstrap-switch.less" />
+    <Content Include="bower_components\bootstrap-switch\src\less\bootstrap3\build.less" />
+    <Content Include="bower_components\bootstrap-switch\src\less\bootstrap3\mixins.less" />
+    <Content Include="bower_components\bootstrap-switch\src\less\bootstrap3\variables.less" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
@@ -452,12 +480,16 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
+    <TypeScriptCompile Include="app\bindinghandlers.ts" />
     <TypeScriptCompile Include="app\main.ts" />
     <TypeScriptCompile Include="app\OData.ts" />
+    <TypeScriptCompile Include="app\QueryModel.ts" />
     <TypeScriptCompile Include="app\PersonService.ts" />
     <TypeScriptCompile Include="app\utils.ts" />
     <TypeScriptCompile Include="app\ViewModel.ts" />
     <TypeScriptCompile Include="tsd.d.ts" />
+    <TypeScriptCompile Include="typings\bootstrap\bootstrap.d.ts" />
+    <TypeScriptCompile Include="typings\jquery\jquery.d.ts" />
     <TypeScriptCompile Include="typings\knockout\knockout.d.ts" />
     <TypeScriptCompile Include="typings\requirejs\require.d.ts" />
   </ItemGroup>

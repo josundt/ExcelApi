@@ -17,6 +17,7 @@
   "dependencies": {
     "bootstrap": "~3.3.4",
     "requirejs": "~2.1.17",
-    "knockoutjs": "~3.3.0"
+    "knockoutjs": "~3.3.0",
+    "bootstrap-switch": "~3.3.2"
   }
 }

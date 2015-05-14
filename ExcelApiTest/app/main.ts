@@ -1,4 +1,8 @@
 ﻿/// <reference path="../tsd.d.ts" />
+
+/// <amd-dependency path="bootstrap"/>
+/// <amd-dependency path="bindinghandlers"/>
+
 import * as ko from "knockout";
 import ViewModel from "ViewModel";
 import { cookies } from "utils";

@@ -6,49 +6,70 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap.css" />
+    <link rel="stylesheet" href="bower_components/bootstrap-switch/dist/css/bootstrap3/bootstrap-switch.css" />
 </head>
 <body>
     <div class="container">
 
         <h1 class="page-header">OData WebAPI Output Format PoC</h1>
-
+        <div class="well well-sm" data-bind="text: lastQueryString"></div>
         <div class="row">
             <div class="col-md-4">
-                <div class="form-group">
-                    <label for="outputformat">Data type:</label>
-                    <select id="outputformat" class="form-control" data-bind="options: outputTypes, optionsText: 'text', value: outputType"></select>
-                </div>
-                <div class="form-group" data-bind="visible: languageSelectorVisible">
-                    <label for="language">UI language/formatting culture:</label>
-                    <select id="language" class="form-control" data-bind="options: languages, optionsText: 'text', value: language"></select>
-                </div>
-                <div class="form-group">
-                    <label for="sortBy">Sort by:</label>
-                    <select id="sortBy" class="form-control" data-bind="options: entityProps, optionsText: 'text', value: sortProperty"></select>
-                </div>
-                <div class="form-group" data-bind="visible: sortProperty().value">
-                    <label>Sort descending:</label>
-                    <input type="checkbox" class="checkbox-inline" data-bind="checked: sortDescending"/>
-                </div>
-                
-                <label data-bind="text: filters().length > 1 ? 'Filters:' : 'Filter:'"></label>
-                <!-- ko foreach: filters -->
-                <div class="form-group">
-                    <button class="close pull-right danger" data-bind="click: function() { $parent.removeFilter($data); }">&times;</button>
-                    <label style="display: block; text-align: center;" data-bind="visible: $index() !== 0">...and...</label>
-                    <select class="form-control" data-bind="options: properties, optionsText: 'text', value: property"></select>
-                    <select class="form-control" data-bind="options: operators, optionsText: 'text', value: operator"></select>
-                    <input type="text" class="form-control" data-bind="value: value"/>
-                </div>
-                <!-- /ko -->
+                <form data-bind="submit: getData">
+                    <div class="form-group">
+                        <label for="outputformat">Data type:</label>
+                        <select id="outputformat" class="form-control" data-bind="options: outputTypes, optionsText: 'text', value: outputType"></select>
+                    </div>
+                    <div class="form-group" data-bind="visible: languageSelectorVisible">
+                        <label for="language">UI language/formatting culture:</label>
+                        <select id="language" class="form-control" data-bind="options: languages, optionsText: 'text', value: language"></select>
+                    </div>
 
-                <div class="form-group">
-                    <button class="btn" data-bind="click: addFilter">+</button>
-                </div>
-                <div><hr/></div>
-                <div class="form-group">
-                    <button class="btn btn-info form-control" data-bind="click: getData">Get data!</button>
-                </div>
+                    <!-- ko with: query -->
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <h3 class="panel-title" data-bind="text: sortings().length != 1 ? 'Sort criterias:' : 'Sort criteria:'"></h3>
+                        </div>
+                        <div class="panel-body">
+                            <!-- ko foreach: sortings -->
+                            <!--<label style="display: block; text-align: center;" data-bind="visible: $index() !== 0">...and...</label>-->
+                            <div class="well well-sm">
+                                <button type="button" class="close pull-right danger" data-bind="click: function() { $parent.removeSorting($data); }">&times;</button>
+                                <select id="sortBy" class="form-control" data-bind="options: $parent.properties, optionsText: 'text', value: property"></select>
+                                <input type="checkbox" class="checkbox-inline" data-bind="bootstrapSwitch: { onText: 'DESC', offText: 'ASC' }, checked: descending" />
+                            </div>
+                            <!-- /ko -->
+                            <button type="button" class="btn btn-info pull-right" data-bind="click: addSorting" title="Add sort criteria">+</button>
+                        </div>
+                    </div>
+
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <h3 class="panel-title" data-bind="text: filters().length != 1 ? 'Filter predicates:' : 'Filter predicate:'"></h3>
+                        </div>
+                        <div class="panel-body">
+                            <!-- ko foreach: filters -->
+                            <!--<label style="display: block; text-align: center;" data-bind="visible: $index() !== 0">...and...</label>-->
+                            <div class="well well-sm">
+                                <button type="button" class="close pull-right danger" data-bind="click: function() { $parent.removeFilter($data); }">&times;</button>
+                                <select class="form-control" data-bind="options: $parent.properties, optionsText: 'text', value: property"></select>
+                                <select class="form-control" data-bind="options: operators, optionsText: 'text', value: operator"></select>
+                                <input type="text" class="form-control" data-bind="value: value" />
+                            </div>
+                            <!-- /ko -->
+                            <button type="button" class="btn btn-info pull-right" data-bind="click: addFilter" title="Add filter predicate">+</button>
+                        </div>
+                    </div>
+
+                    <!-- /ko -->
+
+                    <div>
+                        <hr />
+                    </div>
+                    <div class="form-group">
+                        <button type="submit" class="btn btn-info form-control">Get data!</button>
+                    </div>
+                </form>
             </div>
             <div class="col-md-8">
                 <div class="form-group" style="display: none" data-bind="visible: rawResponseBody">
@@ -60,6 +81,6 @@
 
         <script src="require.config.js"></script>
         <script src="bower_components/requirejs/require.js" data-main="app/main"></script>
-</div>
+    </div>
 </body>
 </html>
