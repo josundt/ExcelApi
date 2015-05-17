@@ -1,24 +1,33 @@
-﻿import {computedFrom} from 'aurelia-framework';
-
-import QueryModel from "views/QueryModel";
-import PersonService from "../services/PersonService";
-import { PersonQueryOptions } from "../services/PersonService";
-import { DataType, PropertyInfo, FilterParameter, FilterOperator, FilterOperators } from "../services/OData";
-import { cookies } from "../core/utils";
+﻿import {computedFrom, inject} from 'aurelia-framework';
+import {ObserverLocator} from 'aurelia-binding'; 
+import {QueryModel} from "views/QueryModel";
+import {PersonService, PersonQueryOptions} from "../services/PersonService";
+import {DataType, PropertyInfo, FilterParameter, FilterOperator, FilterOperators} from "../services/OData";
+import {cookies} from "../core/utils";
 
 interface DropListItem<T> {
     text: string;
     value: T;
 }
 
-export default class ViewModel {
+@inject(ObserverLocator, PersonService)
+export default class CustomQueryPage {
 
-    constructor() {
-        this._personService = new PersonService();
-        //this.language.subscribe(this._onLanguageChange, this);
+    constructor(
+        observerLocator: ObserverLocator,
+        personService: PersonService) {
+
+        this._disposables.push(
+            observerLocator
+                .getObserver(this, "language")
+                .subscribe(this._onLanguageChange));
+
+        this._personService = personService;
     }
 
     private _personService: PersonService;
+
+    private _disposables: Array<() => void> = [];
 
     outputTypes: DropListItem<string>[] = [
         { text: "Excel (xslx)", value: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" },
@@ -83,13 +92,19 @@ export default class ViewModel {
     private _onLanguageChange(languageItem: DropListItem<string>) {
         cookies.add("language", languageItem.value);
     }
+
+    deactivate() {
+        for (let disposable of this._disposables) {
+            disposable();
+        }
+    }
 }
 
 export class QueryReadablifyValueConverter {
     toView(value: string) {
-        var result = "";
+        let result = "";
         if (value) {
-            var decoded = decodeURIComponent(value);
+            let decoded = decodeURIComponent(value);
             if (decoded.indexOf("?") === 0) {
                 decoded = decoded.substring(1);        
             }

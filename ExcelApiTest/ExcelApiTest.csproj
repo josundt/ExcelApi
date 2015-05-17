@@ -206,7 +206,9 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="app\views\app.html" />
-    <Content Include="app\views\home.html" />
+    <Content Include="app\views\grid.html" />
+    <Content Include="app\views\query.html" />
+    <Content Include="app\views\nav-bar.html" />
     <Content Include="bower_components\webcomponentsjs\CustomElements.js" />
     <Content Include="bower_components\webcomponentsjs\CustomElements.min.js" />
     <Content Include="bower_components\webcomponentsjs\HTMLImports.js" />
@@ -593,8 +595,10 @@
     <TypeScriptCompile Include="app\services\OData.ts" />
     <TypeScriptCompile Include="app\services\PersonService.ts" />
     <TypeScriptCompile Include="app\core\utils.ts" />
-    <TypeScriptCompile Include="app\views\home.ts" />
+    <TypeScriptCompile Include="app\views\grid.ts" />
+    <TypeScriptCompile Include="app\views\query.ts" />
     <TypeScriptCompile Include="app\views\main.ts" />
+    <TypeScriptCompile Include="app\views\nav-bar.ts" />
     <TypeScriptCompile Include="app\views\QueryModel.ts" />
     <TypeScriptCompile Include="tsd.d.ts" />
     <TypeScriptCompile Include="typings\aurelia-amd\aurelia-amd.d.ts" />

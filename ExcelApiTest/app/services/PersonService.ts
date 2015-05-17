@@ -6,7 +6,7 @@ export interface PersonQueryOptions {
     acceptLanguageHeader: string;
 }
 
-export default class PersonService {
+export class PersonService {
     getPersons(
         queryString: string,
         options: PersonQueryOptions,

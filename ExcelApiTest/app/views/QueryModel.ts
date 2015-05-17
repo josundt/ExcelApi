@@ -8,10 +8,9 @@ interface LabeledItem<T> {
     value: T;
 }
 
-export default class QueryModel {
+export class QueryModel {
     constructor(properties: LabeledItem<PropertyInfo>[]) {
         this.properties = properties;
-        (<{ [key: string]: QueryModel }><any>window)["vm"] = this;
     }
     properties: LabeledItem<PropertyInfo>[];
     filters: Filter[] = [];
@@ -95,12 +94,14 @@ export class Filter {
         }
         return result;
     }
-    operator: LabeledItem<FilterOperator> = null;
-    value: string = null;
 
+    operator: LabeledItem<FilterOperator> = null;
+
+    value: string = null;
 }
 
 export class Sorting {
     property: LabeledItem<PropertyInfo> = null;
+
     descending: boolean = false;
 }
