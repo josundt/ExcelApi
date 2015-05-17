@@ -1,9 +1,10 @@
-﻿import * as ko from "knockout";
-import QueryModel from "QueryModel";
-import PersonService from "PersonService";
-import { PersonQueryOptions } from "PersonService";
-import { DataType, PropertyInfo, FilterParameter, FilterOperator, FilterOperators } from "OData";
-import { cookies } from "utils";
+﻿import {computedFrom} from 'aurelia-framework';
+
+import QueryModel from "views/QueryModel";
+import PersonService from "../services/PersonService";
+import { PersonQueryOptions } from "../services/PersonService";
+import { DataType, PropertyInfo, FilterParameter, FilterOperator, FilterOperators } from "../services/OData";
+import { cookies } from "../core/utils";
 
 interface DropListItem<T> {
     text: string;
@@ -14,8 +15,7 @@ export default class ViewModel {
 
     constructor() {
         this._personService = new PersonService();
-        this.languageSelectorVisible = ko.computed(this._getLanguageSelectorVisible, this);
-        this.language.subscribe(this._onLanguageChange, this);
+        //this.language.subscribe(this._onLanguageChange, this);
     }
 
     private _personService: PersonService;
@@ -40,33 +40,41 @@ export default class ViewModel {
         { text: "Is student", value: { name: "IsStudent", dataType: DataType.boolean } }
     ];
 
-    outputType: KnockoutObservable<DropListItem<string>> = ko.observable(this.outputTypes[0]);
-    language: KnockoutObservable<DropListItem<string>> = ko.observable(this.languages[0]);
-    languageSelectorVisible: KnockoutComputed<boolean>;
+    outputType: DropListItem<string> = this.outputTypes[0];
+    language: DropListItem<string> = this.languages[0];
 
-    sortProperty: KnockoutObservable<DropListItem<PropertyInfo>> = ko.observable(this.entityProps[0]);
-    sortDescending: KnockoutObservable<boolean> = ko.observable(false);
+    @computedFrom("outputType")
+    get languageSelectorVisible(): boolean {
+        let outputType = this.outputType;
+        let languageSupportedOutputTypes = [
+            "text/csv",
+            "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"];
+        return languageSupportedOutputTypes.some(lsot => outputType.value === lsot);
+    }
+
+    sortProperty: DropListItem<PropertyInfo> = this.entityProps[0];
+    sortDescending: boolean = false;
 
     query = new QueryModel(this.entityProps);
 
-    rawResponseBody = ko.observable(<string>null);
+    rawResponseBody: string = null;
 
-    lastQueryString = ko.observable(<string>null);
+    lastQueryString: string = null;
 
     getData() {
         let options: PersonQueryOptions = {
-            acceptHeader: this.outputType().value,
-            acceptLanguageHeader: this.language().value,
+            acceptHeader: this.outputType.value,
+            acceptLanguageHeader: this.language.value,
         };
 
-        var queryString = this.query.toQueryString();
+        let queryString = this.query.toQueryString();
 
         this._personService.getPersons(
             queryString,
             options,
             (result) => {
-                this.rawResponseBody(result);
-                this.lastQueryString(queryString);
+                this.rawResponseBody = result;
+                this.lastQueryString = queryString;
             }, (error: Error) => {
                 alert(Error);
             });
@@ -75,12 +83,18 @@ export default class ViewModel {
     private _onLanguageChange(languageItem: DropListItem<string>) {
         cookies.add("language", languageItem.value);
     }
+}
 
-    private _getLanguageSelectorVisible() {
-        var outputType = this.outputType();
-        var languageSupportedOutputTypes = [
-            "text/csv",
-            "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"];
-        return languageSupportedOutputTypes.some(lsot => outputType.value === lsot);
+export class QueryReadablifyValueConverter {
+    toView(value: string) {
+        var result = "";
+        if (value) {
+            var decoded = decodeURIComponent(value);
+            if (decoded.indexOf("?") === 0) {
+                decoded = decoded.substring(1);        
+            }
+            result = decoded.split("&").join("\n");
+        }
+        return result;
     }
 }

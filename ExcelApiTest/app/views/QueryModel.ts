@@ -1,53 +1,56 @@
-﻿import * as ko from "knockout";
-import {PropertyInfo, FilterOperator, FilterOperators, DataType} from "OData";
+﻿import {computedFrom} from 'aurelia-framework';
+
+import {array} from "../core/utils";
+import {PropertyInfo, FilterOperator, FilterOperators, DataType} from "../services/OData";
 
 interface LabeledItem<T> {
-    text: string | KnockoutObservable<string>;
+    text: string;
     value: T;
 }
 
 export default class QueryModel {
     constructor(properties: LabeledItem<PropertyInfo>[]) {
         this.properties = properties;
+        (<{ [key: string]: QueryModel }><any>window)["vm"] = this;
     }
     properties: LabeledItem<PropertyInfo>[];
-    filters: KnockoutObservableArray<Filter> = ko.observableArray<Filter>([]);
-    sortings: KnockoutObservableArray<Sorting> = ko.observableArray<Sorting>([]);
+    filters: Filter[] = [];
+    sortings: Sorting[] = [];
     addFilter(): void {
         this.filters.push(new Filter());
     }
     removeFilter(filter: Filter): void {
-        this.filters.remove(filter);
+        array.remove(this.filters, f => f === filter);
     }
     addSorting(): void {
         this.sortings.push(new Sorting());
     }
     removeSorting(sorting: Sorting): void {
-        this.sortings.remove(sorting);
+        array.remove(this.sortings, s => s === sorting);
     }
     toQueryString(): string {
-        let queryParams = [];
+        let queryParams: string[] = [];
 
-        let sortings = this.sortings();
+        let sortings = this.sortings;
         if (sortings && sortings.length > 0) {
             var sortParams: string[] = [];
             sortings.forEach((sorting) => {
-                let property: PropertyInfo = sorting.property().value;
-                let direction: string = sorting.descending() ? encodeURIComponent(" desc") : "";
+                let property: PropertyInfo = sorting.property.value;
+                let direction: string = sorting.descending ? encodeURIComponent(" desc") : "";
 
                 sortParams.push(`${encodeURIComponent(property.name) }${direction}`);
             });
-            queryParams.push(`$orderby=${sortParams.join(',')}`);
+            queryParams.push(`$orderby=${sortParams.join(',') }`);
 
         }
 
-        let filters = this.filters();
+        let filters = this.filters;
         if (filters && filters.length > 0) {
             let filterParams: string[] = [];
             filters.forEach((filter) => {
-                let property: PropertyInfo = filter.property().value;
-                let operator: FilterOperator = filter.operator().value;
-                let value: string = filter.value();
+                let property: PropertyInfo = filter.property.value;
+                let operator: FilterOperator = filter.operator.value;
+                let value: string = filter.value;
 
                 let useQuotes: boolean = [DataType.string, DataType.enum, DataType.date].some(d => d === property.dataType);
                 let valueParam: string = useQuotes ? `'${value}'` : value;
@@ -73,21 +76,17 @@ export default class QueryModel {
 }
 
 export class Filter {
-    constructor() {
-        this.operators = ko.computed(this._getFilterOperators, this);
-    }
-    property: KnockoutObservable<LabeledItem<PropertyInfo>> = ko.observable(null);
-    operators: KnockoutComputed<LabeledItem<FilterOperator>[]>;
-    operator: KnockoutObservable<LabeledItem<FilterOperator>> = ko.observable(null);
-    value: KnockoutObservable<string> = ko.observable(<string>null);
-    private _getFilterOperators(): LabeledItem<FilterOperator>[] {
+    property: LabeledItem<PropertyInfo> = null;
+
+    @computedFrom("property")
+    get operators(): LabeledItem<FilterOperator>[] {
         let result: LabeledItem<FilterOperator>[] = [];
-        let currentProperty = this.property();
+        let currentProperty = this.property;
         if (currentProperty) {
             let propertyInfo: PropertyInfo = currentProperty.value;
             for (let propName in FilterOperators) {
                 if (FilterOperators.hasOwnProperty(propName)) {
-                    let operator: FilterOperator = <FilterOperator>FilterOperators[propName];
+                    let operator: FilterOperator = FilterOperators[propName];
                     if (operator.supportedTypes.some(st => st === propertyInfo.dataType)) {
                         result.push({ text: propName, value: operator });
                     }
@@ -95,11 +94,13 @@ export class Filter {
             }
         }
         return result;
-        //return [{ text: "Equals", value: FilterOperators.equals }];
     }
+    operator: LabeledItem<FilterOperator> = null;
+    value: string = null;
+
 }
 
 export class Sorting {
-    property: KnockoutObservable<LabeledItem<PropertyInfo>> = ko.observable(null);
-    descending: KnockoutObservable<boolean> = ko.observable(false);
+    property: LabeledItem<PropertyInfo> = null;
+    descending: boolean = false;
 }

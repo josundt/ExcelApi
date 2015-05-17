@@ -1,4 +1,4 @@
-﻿import { http } from "utils";
+﻿import { http } from "../core/utils";
 
 
 export interface PersonQueryOptions {
@@ -26,7 +26,7 @@ export default class PersonService {
                 (result: string) => {
                     callback(result);
                 },
-                (error) => {
+                (error: any) => {
                     if (errorCallback) {
                         errorCallback(new Error("Failed to get data from service. See console log for details."));
                     }

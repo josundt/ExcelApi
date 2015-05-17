@@ -39,6 +39,7 @@ export interface FilterOperator {
 }
 
 export interface FilterOperatorMap {
+    [key: string]: FilterOperator;
     equals: FilterOperator;
     notEquals: FilterOperator;
     lessThan: FilterOperator;

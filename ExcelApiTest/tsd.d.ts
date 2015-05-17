@@ -1,3 +1,3 @@
 ﻿/// <reference path="typings/requirejs/require.d.ts" />
-/// <reference path="typings/knockout/knockout.d.ts" />
-/// <reference path="typings/jquery/jquery.d.ts" />
+/// <reference path="typings/es6.d.ts" />
+/// <reference path="typings/aurelia/aurelia-framework.d.ts" />

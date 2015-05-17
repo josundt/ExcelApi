@@ -1,4 +1,55 @@
-﻿using System;
+﻿using System.Configuration;
+using ExcelApiTest.Model;
+using Microsoft.Data.Entity;
+using Microsoft.Data.Entity.Metadata.Builders;
+
+namespace ExcelApiTest.Data
+{
+    public class DataStore : DbContext
+    {
+        public DbSet<Person> Persons { get; set; }
+
+        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        {
+            base.OnConfiguring(optionsBuilder);
+
+            optionsBuilder.UseSqlServer(ConfigurationManager.ConnectionStrings["ExcelApiTestDb"].ConnectionString);
+        }
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<Person>().Configure();
+        }
+    }
+
+    internal static class EntityTypeBuilderExtensions
+    {
+        public static void Configure(this EntityTypeBuilder<Person> person)
+        {
+            person.ForSqlServer().Table("Person");
+
+            person.Key(p => p.Id);
+
+            person.Property(p => p.FirstName)
+                .MaxLength(50)
+                .Required();
+
+            person.Property(p => p.LastName)
+                .MaxLength(50)
+                .Required();
+            person.Property(p => p.BirthDate)
+                .Required();
+
+            
+        }
+    }
+    
+}
+
+// OLD EF6 implementation:
+
+/*
+using System;
 using System.Collections.Generic;
 using System.Data.Entity;
 using System.Data.Entity.ModelConfiguration;
@@ -79,3 +130,4 @@ namespace ExcelApiTest.Data
     }
 
 }
+*/

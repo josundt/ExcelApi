@@ -26,7 +26,6 @@ namespace ExcelApiTest.Formatters
             }
         }
 
-
         public override bool CanReadType(Type type)
         {
             return false;
