@@ -276,6 +276,15 @@
     <Compile Include="Formatters\CsvFormatter.cs" />
     <Compile Include="Formatters\ExcelFormatter.cs" />
     <Compile Include="Formatters\TypeExtensions.cs" />
+    <Compile Include="Migrations\20150518151503_Initial.cs" />
+    <Compile Include="Migrations\20150518151503_Initial.designer.cs">
+      <DependentUpon>20150518151503_Initial.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\20150518151920_SeedPersons.cs" />
+    <Compile Include="Migrations\20150518151920_SeedPersons.designer.cs">
+      <DependentUpon>20150518151920_SeedPersons.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\DataStoreModelSnapshot.cs" />
     <Compile Include="Model\Gender.cs" />
     <Compile Include="Model\Person.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

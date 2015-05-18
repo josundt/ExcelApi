@@ -28,15 +28,18 @@ namespace ExcelApiTest.Data
         {
             person.ForSqlServer().Table("Person");
 
+            person.Property(p => p.Id).ForSqlServer().UseIdentity();
+
             person.Key(p => p.Id);
 
             person.Property(p => p.FirstName)
                 .MaxLength(50)
-                .Required();
+                .Required().ForSqlServer();
 
             person.Property(p => p.LastName)
                 .MaxLength(50)
                 .Required();
+
             person.Property(p => p.BirthDate)
                 .Required();
 

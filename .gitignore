@@ -189,9 +189,7 @@ _Pvt_Extensions/
 ModelManifest.xml
 
 /ExcelApiTest/bower_components
-/ExcelApiTest/Properties/PublishProfiles/excelapi - FTP.pubxml
-/ExcelApiTest/Properties/PublishProfiles/excelapi - Web Deploy.pubxml
-/ExcelApiTest/Properties/PublishProfiles/excelapi.pubxml
+/ExcelApiTest/Properties/PublishProfiles/**/*
 
 /ExcelApiTest/app/**/*.js
 /ExcelApiTest/app/**/*.js.map
