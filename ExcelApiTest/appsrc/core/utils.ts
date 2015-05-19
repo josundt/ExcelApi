@@ -2,24 +2,30 @@
     export function get(
         url: string,
         acceptHeader: string,
-        acceptLanguageHeader: string,
-        fnSuccess: (data: string) => void,
-        fnError?: (status: number, xhr: XMLHttpRequest) => void) {
+        acceptLanguageHeader: string
+        //fnSuccess: (data: string) => void,
+        //fnError?: (status: number, xhr: XMLHttpRequest) => void
+        ): Promise<string> {
 
-        let xhr = new XMLHttpRequest();
-        xhr.onreadystatechange = function () {
-            if (xhr.readyState === 4) {
-                if (xhr.status === 200) {
-                    fnSuccess(xhr.responseText);
-                } else {
-                    fnError(xhr.status, xhr);
+        return new Promise((resolve, reject) => {
+            let xhr = new XMLHttpRequest();
+            xhr.onreadystatechange = function () {
+                if (xhr.readyState === 4) {
+                    if (xhr.status === 200) {
+                        resolve(xhr.responseText);
+                    } else {
+                        var error = <{ [key: string]: any }> <any> new Error("http get error");
+                        error["statusCode"] = xhr.status;
+                        error["xhr"] = xhr;
+                        reject(error);
+                    }
                 }
             }
-        }
-        xhr.open("GET", url, true);
-        xhr.setRequestHeader("Accept", acceptHeader || "application/json");
-        xhr.setRequestHeader("Accept-Language", acceptLanguageHeader || "en-US");
-        xhr.send();
+            xhr.open("GET", url, true);
+            xhr.setRequestHeader("Accept", acceptHeader || "application/json");
+            xhr.setRequestHeader("Accept-Language", acceptLanguageHeader || "en-US");
+            xhr.send();
+        });
     }
 }
 
@@ -144,5 +150,13 @@ export module array {
             }
             return prev;
         }, []);
+    }
+}
+
+export module date {
+    var isoDateStringRegex: RegExp = /^\d{4}\-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d{1,7})?([\+\-]\d{2}:\d{2}|[A-Z])?$/i;
+
+    export function isIsoDateString(dateString: string) {
+        return isoDateStringRegex.test(dateString);
     }
 }

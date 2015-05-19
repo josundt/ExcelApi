@@ -1,14 +1,10 @@
 ﻿import {computedFrom, inject} from 'aurelia-framework';
 import {ObserverLocator} from 'aurelia-binding'; 
 import {QueryModel} from "views/QueryModel";
-import {PersonService, PersonQueryOptions} from "../services/PersonService";
-import {DataType, PropertyInfo, FilterParameter, FilterOperator, FilterOperators} from "../services/OData";
-import {cookies} from "../core/utils";
-
-interface DropListItem<T> {
-    text: string;
-    value: T;
-}
+import {PersonService, PersonQueryOptions} from "services/PersonService";
+import {PropertyInfo, FilterParameter, FilterOperator, FilterOperators, LabeledItem} from "services/OData";
+import {cookies, array} from "core/utils";
+import {PersonMetadata} from "services/modelmetadata";
 
 @inject(ObserverLocator, PersonService)
 export default class CustomQueryPage {
@@ -29,28 +25,21 @@ export default class CustomQueryPage {
 
     private _disposables: Array<() => void> = [];
 
-    outputTypes: DropListItem<string>[] = [
+    outputTypes: LabeledItem<string>[] = [
         { text: "Excel (xslx)", value: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" },
         { text: "CSV", value: "text/csv" },
         { text: "JSON", value: "application/json" },
         { text: "XML", value: "text/xml" }
     ];
-    languages: DropListItem<string>[] = [
+    languages: LabeledItem<string>[] = [
         { text: "English (US)", value: "en-US" },
         { text: "English (UK)", value: "en-GB" },
         { text: "Norwegian", value: "nb-NO" }
     ];
-    entityProps: DropListItem<PropertyInfo>[] = [
-        { text: "First name", value: { name: "FirstName", dataType: DataType.string } },
-        { text: "Last name", value: { name: "LastName", dataType: DataType.string } },
-        { text: "Birth date", value: { name: "BirthDate", dataType: DataType.date } },
-        { text: "Gender", value: { name: "Gender", dataType: DataType.enum } },
-        { text: "Yearly income", value: { name: "YearlyIncome", dataType: DataType.float } },
-        { text: "Is student", value: { name: "IsStudent", dataType: DataType.boolean } }
-    ];
+    entityProps: LabeledItem<PropertyInfo>[] = PersonMetadata.properties;
 
-    outputType: DropListItem<string> = this.outputTypes[0];
-    language: DropListItem<string> = this.languages[0];
+    outputType: LabeledItem<string> = this.outputTypes[0];
+    language: LabeledItem<string> = this.languages[0];
 
     @computedFrom("outputType")
     get languageSelectorVisible(): boolean {
@@ -61,10 +50,10 @@ export default class CustomQueryPage {
         return languageSupportedOutputTypes.some(lsot => outputType.value === lsot);
     }
 
-    sortProperty: DropListItem<PropertyInfo> = this.entityProps[0];
+    sortProperty: LabeledItem<PropertyInfo> = this.entityProps[0];
     sortDescending: boolean = false;
 
-    query = new QueryModel(this.entityProps);
+    query = new QueryModel(PersonMetadata);
 
     rawResponseBody: string = null;
 
@@ -78,18 +67,15 @@ export default class CustomQueryPage {
 
         let queryString = this.query.toQueryString();
 
-        this._personService.getPersons(
-            queryString,
-            options,
-            (result) => {
-                this.rawResponseBody = result;
-                this.lastQueryString = queryString;
-            }, (error: Error) => {
-                alert(Error);
-            });
+        this._personService.getPersonsRaw(queryString, options).then((data: string) => {
+            this.rawResponseBody = data;
+            this.lastQueryString = queryString;
+        }).catch((error: Error) => {
+            alert(error.message);
+        });
     }
 
-    private _onLanguageChange(languageItem: DropListItem<string>) {
+    private _onLanguageChange(languageItem: LabeledItem<string>) {
         cookies.add("language", languageItem.value);
     }
 
