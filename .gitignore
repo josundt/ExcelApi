@@ -192,3 +192,4 @@ ModelManifest.xml
 /ExcelApiTest/Properties/PublishProfiles/**/*
 
 /ExcelApiTest/app/
+/ExcelApiTest/lib/

@@ -39,6 +39,42 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
+  <PropertyGroup>
+    <CopyAllFilesToSingleFolderForPackageDependsOn>
+      DefineCustomFiles;
+      CustomCollectFiles;
+      $(CopyAllFilesToSingleFolderForMsdeployDependsOn);
+    </CopyAllFilesToSingleFolderForPackageDependsOn>
+    <CopyAllFilesToSingleFolderForMsdeployDependsOn>
+      DefineCustomFiles;
+      CustomCollectFiles;
+      $(CopyAllFilesToSingleFolderForMsdeployDependsOn);
+    </CopyAllFilesToSingleFolderForMsdeployDependsOn>
+  </PropertyGroup>
+  <Target Name="DefineCustomFiles">
+    <ItemGroup>
+      <CustomFilesToInclude Include="app\**\*.*">
+        <Dir>app</Dir>
+      </CustomFilesToInclude>
+      <CustomFilesToInclude Include="lib\**\*.*">
+        <Dir>lib</Dir>
+      </CustomFilesToInclude>
+      <CustomFilesToInclude Include="appsrc\**\*.ts">
+        <Dir>appsrc</Dir>
+      </CustomFilesToInclude>
+    </ItemGroup>
+  </Target>
+  <Target Name="CustomCollectFiles">
+    <ItemGroup>
+      <FilesForPackagingFromProject Include="@(CustomFilesToInclude)">
+        <DestinationRelativePath>%(CustomFilesToInclude.Dir)\%(RecursiveDir)%(Filename)%(Extension)</DestinationRelativePath>
+      </FilesForPackagingFromProject>
+      <FilesForPackagingFromProject Include="@(CustomFilesToIncludeSkipExistingCheck)">
+        <DestinationRelativePath>%(CustomFilesToIncludeSkipExistingCheck.Dir)\%(RecursiveDir)%(Filename)%(Extension)</DestinationRelativePath>
+      </FilesForPackagingFromProject>
+    </ItemGroup>
+    <Error Text="Custom file exists in project files already: %(CustomFilesToInclude.FullPath)" Condition="Exists('$(MainProjectRootDir)\%(CustomFilesToInclude.Dir)\%(RecursiveDir)%(Filename)%(Extension)')" />
+  </Target>
   <ItemGroup>
     <Reference Include="EntityFramework.Commands, Version=7.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\EntityFramework.Commands.7.0.0-beta4\lib\net451\EntityFramework.Commands.dll</HintPath>
@@ -260,8 +296,9 @@
     <Content Include="lib\bootstrap\fonts\glyphicons-halflings-regular.eot" />
     <Content Include="lib\bootstrap\fonts\glyphicons-halflings-regular.ttf" />
     <Content Include="lib\bootstrap\fonts\glyphicons-halflings-regular.woff" />
-    <None Include="Properties\PublishProfiles\excelapi.pubxml" />
     <Content Include="tsconfig.json" />
+    <None Include="Properties\PublishProfiles\excelapi.pubxml" />
+    <None Include="Properties\PublishProfiles\filesystemtest.pubxml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
@@ -320,6 +357,7 @@
   </ItemGroup>
   <ItemGroup>
     <TypeScriptCompile Include="appsrc\main.ts" />
+    <TypeScriptCompile Include="appsrc\services\modelmetadata.ts" />
     <TypeScriptCompile Include="appsrc\views\app.ts" />
     <TypeScriptCompile Include="appsrc\services\OData.ts" />
     <TypeScriptCompile Include="appsrc\services\PersonService.ts" />
@@ -369,6 +407,12 @@
   <PropertyGroup Condition="'$(Configuration)' == 'Debug'">
     <TypeScriptModuleKind>amd</TypeScriptModuleKind>
     <TypeScriptNoImplicitAny>True</TypeScriptNoImplicitAny>
+    <TypeScriptOutDir>C:\_Git\ExcelApi\ExcelApiTest\app</TypeScriptOutDir>
+    <TypeScriptSourceRoot>/appsrc/</TypeScriptSourceRoot>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)' == 'Release'">
+    <TypeScriptNoImplicitAny>True</TypeScriptNoImplicitAny>
+    <TypeScriptModuleKind>amd</TypeScriptModuleKind>
     <TypeScriptOutDir>C:\_Git\ExcelApi\ExcelApiTest\app</TypeScriptOutDir>
     <TypeScriptSourceRoot>/appsrc/</TypeScriptSourceRoot>
   </PropertyGroup>
