@@ -312,6 +312,7 @@
   </ItemGroup>
   <ItemGroup>
     <TypeScriptCompile Include="app\main.ts" />
+    <TypeScriptCompile Include="app\services\modelmetadata.ts" />
     <TypeScriptCompile Include="app\views\app.ts" />
     <TypeScriptCompile Include="app\services\OData.ts" />
     <TypeScriptCompile Include="app\services\PersonService.ts" />

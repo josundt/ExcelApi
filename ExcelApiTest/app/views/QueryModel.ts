@@ -1,18 +1,17 @@
 ﻿import {computedFrom} from 'aurelia-framework';
 
-import {array} from "../core/utils";
-import {PropertyInfo, FilterOperator, FilterOperators, DataType} from "../services/OData";
+import {array} from "core/utils";
+import {PropertyInfo, FilterOperator, FilterOperators, DataType, EntityMetadata, LabeledItem} from "services/OData";
 
-interface LabeledItem<T> {
-    text: string;
-    value: T;
-}
 
 export class QueryModel {
-    constructor(properties: LabeledItem<PropertyInfo>[]) {
-        this.properties = properties;
+    constructor(metadata: EntityMetadata) {
+        this.metadata = metadata;
     }
-    properties: LabeledItem<PropertyInfo>[];
+    metadata: EntityMetadata;
+    get properties(): LabeledItem<PropertyInfo>[] {
+        return this.metadata.properties;
+    }
     filters: Filter[] = [];
     sortings: Sorting[] = [];
     addFilter(): void {

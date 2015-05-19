@@ -1,4 +1,5 @@
-﻿var gulp = require("gulp");
+/// <vs BeforeBuild='copy' Clean='clean' SolutionOpened='copy' />
+var gulp = require("gulp");
 var rimraf = require("rimraf");
 var fs = require("fs");
 

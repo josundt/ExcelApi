@@ -12,6 +12,15 @@ export interface PropertyInfo {
     dataType: DataType;
 }
 
+export interface LabeledItem<T> {
+    text: string;
+    value: T;
+}
+
+export interface EntityMetadata {
+    properties: LabeledItem<PropertyInfo>[];
+}
+
 let dataTypeCategory = {
     all: [DataType.boolean, DataType.date, DataType.enum, DataType.float, DataType.integer, DataType.string],
     comparables: [DataType.date, DataType.float, DataType.integer]
