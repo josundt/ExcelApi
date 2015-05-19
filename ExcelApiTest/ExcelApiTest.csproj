@@ -205,10 +205,18 @@
     <Reference Include="System.EnterpriseServices" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="app\views\app.html" />
-    <Content Include="app\views\grid.html" />
-    <Content Include="app\views\query.html" />
-    <Content Include="app\views\nav-bar.html" />
+    <Content Include="appsrc\views\app.html" />
+    <Content Include="appsrc\views\grid.html" />
+    <Content Include="appsrc\views\query.html" />
+    <Content Include="appsrc\views\nav-bar.html" />
+    <Content Include="build\paths.js" />
+    <Content Include="build\tasks\build-typescript.js" />
+    <Content Include="build\tasks\build-html.js" />
+    <Content Include="build\tasks\build.js" />
+    <Content Include="build\tasks\clean-app.js" />
+    <Content Include="build\tasks\clean-lib.js" />
+    <Content Include="build\tasks\clean.js" />
+    <Content Include="build\tasks\copy-lib.js" />
     <Content Include="gulpfile.js" />
     <Content Include="aurelia\aurelia-bundle-latest.js" />
     <Content Include="aurelia\aurelia-bundle.js" />
@@ -311,16 +319,16 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <TypeScriptCompile Include="app\main.ts" />
-    <TypeScriptCompile Include="app\views\app.ts" />
-    <TypeScriptCompile Include="app\services\OData.ts" />
-    <TypeScriptCompile Include="app\services\PersonService.ts" />
-    <TypeScriptCompile Include="app\core\utils.ts" />
-    <TypeScriptCompile Include="app\views\grid.ts" />
-    <TypeScriptCompile Include="app\views\query.ts" />
-    <TypeScriptCompile Include="app\views\main.ts" />
-    <TypeScriptCompile Include="app\views\nav-bar.ts" />
-    <TypeScriptCompile Include="app\views\QueryModel.ts" />
+    <TypeScriptCompile Include="appsrc\main.ts" />
+    <TypeScriptCompile Include="appsrc\views\app.ts" />
+    <TypeScriptCompile Include="appsrc\services\OData.ts" />
+    <TypeScriptCompile Include="appsrc\services\PersonService.ts" />
+    <TypeScriptCompile Include="appsrc\core\utils.ts" />
+    <TypeScriptCompile Include="appsrc\views\grid.ts" />
+    <TypeScriptCompile Include="appsrc\views\query.ts" />
+    <TypeScriptCompile Include="appsrc\views\main.ts" />
+    <TypeScriptCompile Include="appsrc\views\nav-bar.ts" />
+    <TypeScriptCompile Include="appsrc\views\QueryModel.ts" />
     <TypeScriptCompile Include="tsd.d.ts" />
     <TypeScriptCompile Include="typings\aurelia-amd\aurelia-amd.d.ts" />
     <TypeScriptCompile Include="typings\aurelia\aurelia-animator-css.d.ts" />
@@ -361,6 +369,8 @@
   <PropertyGroup Condition="'$(Configuration)' == 'Debug'">
     <TypeScriptModuleKind>amd</TypeScriptModuleKind>
     <TypeScriptNoImplicitAny>True</TypeScriptNoImplicitAny>
+    <TypeScriptOutDir>C:\_Git\ExcelApi\ExcelApiTest\app</TypeScriptOutDir>
+    <TypeScriptSourceRoot>/appsrc/</TypeScriptSourceRoot>
   </PropertyGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\TypeScript\Microsoft.TypeScript.targets" Condition="Exists('$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\TypeScript\Microsoft.TypeScript.targets')" />
   <Import Project="$(VSToolsPath)\WebApplications\Microsoft.WebApplication.targets" Condition="'$(VSToolsPath)' != ''" />

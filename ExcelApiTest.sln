@@ -5,6 +5,8 @@ VisualStudioVersion = 12.0.31101.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExcelApiTest", "ExcelApiTest\ExcelApiTest.csproj", "{B17CF5DC-0CC2-45E1-9E54-2D94D1584FED}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "_Web", "_Web", "{EB080FD3-550A-4B8F-A9F7-687DA655C4EC}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -18,5 +20,8 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{B17CF5DC-0CC2-45E1-9E54-2D94D1584FED} = {EB080FD3-550A-4B8F-A9F7-687DA655C4EC}
 	EndGlobalSection
 EndGlobal

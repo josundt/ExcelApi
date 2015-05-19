@@ -1,15 +1,20 @@
 ﻿{
     "compilerOptions": {
-        "module": "amd",
+        "noEmitOnError": true,
         "noImplicitAny": true,
+        "noExternalResolve": false,
         "removeComments": false,
-        "preserveConstEnums": true,
         "sourceMap": true,
-        "target": "ES5",
+        "sourceRoot": "",
+        "outDir": "./app/",
+        "module": "amd",
+        "preserveConstEnums": true,
+        "target": "es5",
+        "listFiles": true,
         "emitDecoratorMetadata": true
     },
     "filesGlob": [
-        "app/**/*.ts"
+        "./appsrc/**/*.ts",
+        "./typings/aurelia/**/*.ts"
     ]
-
 }

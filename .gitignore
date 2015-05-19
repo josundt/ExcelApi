@@ -191,6 +191,4 @@ ModelManifest.xml
 /ExcelApiTest/bower_components
 /ExcelApiTest/Properties/PublishProfiles/**/*
 
-/ExcelApiTest/app/**/*.js
-/ExcelApiTest/app/**/*.js.map
-
+/ExcelApiTest/app/

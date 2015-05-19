@@ -22,7 +22,7 @@ export default class CustomQueryPage {
                 .getObserver(this, "language")
                 .subscribe(this._onLanguageChange));
 
-        this._personService = personService;
+        this._personService = personService; 
     }
 
     private _personService: PersonService;
