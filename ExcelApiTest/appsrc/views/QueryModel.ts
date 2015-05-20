@@ -5,15 +5,23 @@ import {PropertyInfo, FilterOperator, FilterOperators, DataType, EntityMetadata,
 
 
 export class QueryModel {
-    constructor(metadata: EntityMetadata) {
+    constructor(
+        metadata: EntityMetadata,
+        pagination?: boolean) {
+
         this.metadata = metadata;
+        if (pagination) {
+            this.pagination = new Pagination();
+        }
     }
+    private _odataVersion = 4;
     metadata: EntityMetadata;
     get properties(): LabeledItem<PropertyInfo>[] {
         return this.metadata.properties;
     }
     filters: Filter[] = [];
     sortings: Sorting[] = [];
+    pagination: Pagination = null;
     addFilter(): void {
         this.filters.push(new Filter());
     }
@@ -65,6 +73,10 @@ export class QueryModel {
             queryParams.push(`$filter=${filterParams.join(' and ') }`);
         }
 
+        if (this.pagination !== null) {
+            queryParams.push(this._odataVersion >= 4 ? "$count=true" : "$inlinecount=allpages");
+        }
+
         return queryParams.length > 0
             ? `?${queryParams.join('&') }`
             : "";
@@ -103,4 +115,8 @@ export class Sorting {
     property: LabeledItem<PropertyInfo> = null;
 
     descending: boolean = false;
+}
+
+export class Pagination {
+    
 }

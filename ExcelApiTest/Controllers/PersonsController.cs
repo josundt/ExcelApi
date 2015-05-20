@@ -2,6 +2,7 @@
 using System.Web.Http;
 using System.Web.OData;
 using System.Web.OData.Query;
+using System.Web.OData.Routing;
 using ExcelApiTest.Data;
 using ExcelApiTest.Filters;
 using ExcelApiTest.Model;
@@ -10,7 +11,7 @@ namespace ExcelApiTest.Controllers
 {
     [EnableCsvFormat]
     [EnableExcelFormat(WildcardAcceptEnabled = true)]
-    public class PersonsController : ApiController
+    public class PersonsController : ApiController //ODataController
     {
         private readonly DataStore _dataStore;
         
@@ -19,13 +20,12 @@ namespace ExcelApiTest.Controllers
             _dataStore = new DataStore();
         }
 
-        [EnableQuery(AllowedFunctions = AllowedFunctions.AllStringFunctions)]
-        [HttpGet]
-        [Route("persons")]
         [NoCache]
-        public IQueryable<Person> Persons()
+        [EnableQuery(AllowedQueryOptions = AllowedQueryOptions.Count)]
+        [Route("persons")]
+        public IQueryable<Person> /*IHttpActionResult*/ Get()
         {
-            return _dataStore.Persons.AsQueryable();
+            return this._dataStore.Persons.AsQueryable(); //Ok(_dataStore.Persons.AsQueryable());
         }
     }
 }

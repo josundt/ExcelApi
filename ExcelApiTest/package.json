@@ -22,6 +22,7 @@
     "gulp-print": "^1.1.0",
     "gulp-sourcemaps": "^1.5.2",
     "gulp-typescript": "^2.7.4",
+    "gulp-watch": "^4.2.4",
     "require-dir": "^0.3.0",
     "rimraf": "^2.3.3",
     "run-sequence": "^1.1.0",

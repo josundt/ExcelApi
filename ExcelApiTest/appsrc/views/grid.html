@@ -3,18 +3,38 @@
 
         <h1 class="page-header">Grid Sample - OData WebAPI Output Format</h1>
 
-        <table class="table">
-            <thead>
-            <tr>
-                <th repeat.for="prop of entityProps">${prop.text}</th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr repeat.for="item of dataSource">
-                <td repeat.for="prop of $parent.entityProps">${$parent.item[prop.value.name] | displayFormat} </td>
-            </tr>
-            </tbody>
-        </table>
-
+        <div>
+            <table class="table">
+                <thead>
+                <tr>
+                    <th repeat.for="prop of entityProps">${prop.text}</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr repeat.for="item of dataSource">
+                    <td repeat.for="prop of $parent.entityProps">${$parent.item[prop.value.name] | displayFormat} </td>
+                </tr>
+                </tbody>
+            </table>
+            <nav class="text-center">
+                <ul class="pagination">
+                    <li>
+                        <a href="#" aria-label="Previous">
+                            <span aria-hidden="true">&laquo;</span>
+                        </a>
+                    </li>
+                    <li><a href="#">1</a></li>
+                    <li><a href="#">2</a></li>
+                    <li><a href="#">3</a></li>
+                    <li><a href="#">4</a></li>
+                    <li><a href="#">5</a></li>
+                    <li>
+                        <a href="#" aria-label="Next">
+                            <span aria-hidden="true">&raquo;</span>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
     </div>
 </template>

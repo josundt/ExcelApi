@@ -17,7 +17,7 @@ export class GridPage {
 
     private _personService: PersonService;
 
-    query: QueryModel = new QueryModel(PersonMetadata);
+    query: QueryModel = new QueryModel(PersonMetadata, true);
 
     dataSource: Person[];
 
