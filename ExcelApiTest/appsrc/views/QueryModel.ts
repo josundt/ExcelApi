@@ -7,11 +7,11 @@ import {PropertyInfo, FilterOperator, FilterOperators, DataType, EntityMetadata,
 export class QueryModel {
     constructor(
         metadata: EntityMetadata,
-        pagination?: boolean) {
+        pageSize?: number) {
 
         this.metadata = metadata;
-        if (pagination) {
-            this.pagination = new Pagination();
+        if (pageSize !== undefined) {
+            this.pagination = new Pagination(pageSize);
         }
     }
     private _odataVersion = 4;
@@ -43,7 +43,7 @@ export class QueryModel {
             sortings.forEach((sorting) => {
                 let property: PropertyInfo = sorting.property.value;
                 let direction: string = sorting.descending ? encodeURIComponent(" desc") : "";
-
+                
                 sortParams.push(`${encodeURIComponent(property.name) }${direction}`);
             });
             queryParams.push(`$orderby=${sortParams.join(',') }`);
@@ -74,14 +74,13 @@ export class QueryModel {
         }
 
         if (this.pagination !== null) {
+            queryParams.push(`$top=${this.pagination.pageSize}`);
             queryParams.push(this._odataVersion >= 4 ? "$count=true" : "$inlinecount=allpages");
         }
 
         return queryParams.length > 0
             ? `?${queryParams.join('&') }`
             : "";
-
-
     }
 }
 
@@ -118,5 +117,40 @@ export class Sorting {
 }
 
 export class Pagination {
-    
+    constructor(pageSize: number) {
+        this.pageSize = pageSize;
+    }
+    pageSize: number = null;
+    totalCount: number = null;
+    pageNumber: number = 0;
+
+    @computedFrom("totalCount", "pageSize")
+    get enabled(): boolean {
+        return !!this.totalCount && !!this.pageSize;
+    }
+
+
+    @computedFrom("totalCount", "pageSize", "pageNumber")
+    get nextEnabled(): boolean {
+        return !!this.totalCount && !!this.pageSize &&
+            (this.totalCount % (this.pageNumber * this.pageSize) > this.pageSize);
+    }
+
+    @computedFrom("totalCount", "pageSize", "pageNumber")
+    get prevEnabled(): boolean {
+        return !!this.totalCount && !!this.pageSize && !!this.pageNumber && this.pageNumber > 1;
+    }
+
+    prev(): void {
+        if (this.prevEnabled) {
+            this.pageNumber -= 1;
+        }
+    }
+
+    next(): void {
+        if (this.nextEnabled) {
+            this.pageNumber += 1;
+        }
+    }
+
 }

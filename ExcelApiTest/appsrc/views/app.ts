@@ -1,6 +1,10 @@
 ﻿import {Router, RouterConfiguration} from 'aurelia-router';
+import {cookies} from 'core/utils';
 
 export class App {
+    constructor() {
+        cookies.add("language", "en-US");
+    }
     router: Router;
 
     configureRouter(config: RouterConfiguration, router: Router) {

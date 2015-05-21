@@ -120,6 +120,9 @@
   <data name="BirthDate" xml:space="preserve">
     <value>Fødselsdato</value>
   </data>
+  <data name="Female" xml:space="preserve">
+    <value>Kvinne</value>
+  </data>
   <data name="FirstName" xml:space="preserve">
     <value>Fornavn</value>
   </data>
@@ -134,6 +137,9 @@
   </data>
   <data name="LastName" xml:space="preserve">
     <value>Etternavn</value>
+  </data>
+  <data name="Male" xml:space="preserve">
+    <value>Mann</value>
   </data>
   <data name="YearlyIncome" xml:space="preserve">
     <value>Årlig inntekt</value>

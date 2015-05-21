@@ -120,6 +120,12 @@
   <data name="BirthDate" xml:space="preserve">
     <value>Birth date</value>
   </data>
+  <data name="False" xml:space="preserve">
+    <value>False</value>
+  </data>
+  <data name="Female" xml:space="preserve">
+    <value>Female</value>
+  </data>
   <data name="FirstName" xml:space="preserve">
     <value>First name</value>
   </data>
@@ -134,6 +140,12 @@
   </data>
   <data name="LastName" xml:space="preserve">
     <value>Last name</value>
+  </data>
+  <data name="Male" xml:space="preserve">
+    <value>Male</value>
+  </data>
+  <data name="True" xml:space="preserve">
+    <value>True</value>
   </data>
   <data name="YearlyIncome" xml:space="preserve">
     <value>Yearly income</value>

@@ -16,10 +16,10 @@
                 </tr>
                 </tbody>
             </table>
-            <nav class="text-center">
+            <nav class="text-center" if.bind="!!query.pagination">
                 <ul class="pagination">
                     <li>
-                        <a href="#" aria-label="Previous">
+                        <a href="javascript://" aria-label="Previous" click.bind="query.pagination.prev()" enabled.bind="query.pagination.prevEnabled">
                             <span aria-hidden="true">&laquo;</span>
                         </a>
                     </li>
@@ -29,7 +29,7 @@
                     <li><a href="#">4</a></li>
                     <li><a href="#">5</a></li>
                     <li>
-                        <a href="#" aria-label="Next">
+                        <a href="javascript://" aria-label="Next" click.bind="query.pagination.next()" enabled.bind="query.pagination.prevEnabled">
                             <span aria-hidden="true">&raquo;</span>
                         </a>
                     </li>

@@ -21,6 +21,19 @@ export interface EntityMetadata {
     properties: LabeledItem<PropertyInfo>[];
 }
 
+export interface RawQueryResult<T> {
+    value: T[];
+    [key: string]: any;
+}
+
+export interface QueryResult<T> {
+    value: T[];
+    context: string;
+    prevLink?: string;
+    nextLink?: string;
+    count: number;
+}
+
 let dataTypeCategory = {
     all: [DataType.boolean, DataType.date, DataType.enum, DataType.float, DataType.integer, DataType.string],
     comparables: [DataType.date, DataType.float, DataType.integer]

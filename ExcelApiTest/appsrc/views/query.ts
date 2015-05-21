@@ -1,27 +1,27 @@
 ﻿import {computedFrom, inject} from 'aurelia-framework';
 import {ObserverLocator} from 'aurelia-binding'; 
 import {QueryModel} from "views/QueryModel";
-import {PersonService, PersonQueryOptions} from "services/PersonService";
+import {PeopleService, PeopleQueryOptions} from "services/PeopleService";
 import {PropertyInfo, FilterParameter, FilterOperator, FilterOperators, LabeledItem} from "services/OData";
 import {cookies, array} from "core/utils";
 import {PersonMetadata} from "services/modelmetadata";
 
-@inject(ObserverLocator, PersonService)
+@inject(ObserverLocator, PeopleService)
 export default class CustomQueryPage {
 
     constructor(
         observerLocator: ObserverLocator,
-        personService: PersonService) {
+        peopleService: PeopleService) {
 
         this._disposables.push(
             observerLocator
                 .getObserver(this, "language")
                 .subscribe(this._onLanguageChange));
 
-        this._personService = personService; 
+        this._peopleService = peopleService; 
     }
 
-    private _personService: PersonService;
+    private _peopleService: PeopleService;
 
     private _disposables: Array<() => void> = [];
 
@@ -60,14 +60,14 @@ export default class CustomQueryPage {
     lastQueryString: string = null;
 
     getData() {
-        let options: PersonQueryOptions = {
+        let options: PeopleQueryOptions = {
             acceptHeader: this.outputType.value,
             acceptLanguageHeader: this.language.value,
         };
 
         let queryString = this.query.toQueryString();
 
-        this._personService.getPersonsRaw(queryString, options).then((data: string) => {
+        this._peopleService.getPersonsRaw(queryString, options).then((data: string) => {
             this.rawResponseBody = data;
             this.lastQueryString = queryString;
         }).catch((error: Error) => {

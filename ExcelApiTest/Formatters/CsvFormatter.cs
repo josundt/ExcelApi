@@ -42,14 +42,25 @@ namespace ExcelApiTest.Formatters
             using (var writer = new StreamWriter(writeStream, effectiveEncoding))
             {
                 var enumerable = value as IEnumerable<object>;
-                var items = enumerable != null ? enumerable.ToList() : null;
-                var itemType = type.GetFirstGenericTypeParameter(typeof(IEnumerable<>));
-                WriteColHeaders(itemType, writer);
-                if (items != null)
+                var entities = enumerable != null ? enumerable.ToList() : null;
+                var entityType = type.GetFirstGenericTypeParameter(typeof(IEnumerable<>));
+
+                writer.WriteLine(
+                    string.Join(
+                        ";", 
+                        entityType.GetPropertyLabels()));
+
+                if (entities != null)
                 {
-                    foreach (var item in items)
+                    foreach (var entity in entities)
                     {
-                        WriteEntity(itemType, item, writer);
+                        writer.WriteLine(
+                            string.Join(
+                                ";", 
+                                entity.GetPropertiesAsStrings(
+                                    null, 
+                                    GetUserTimeZoneInfo(), 
+                                    CsvEscape)));
                     }
                 }
 
@@ -64,105 +75,6 @@ namespace ExcelApiTest.Formatters
                 //    WriteItem(singleItem.GetType(), singleItem, writer);
                 //}
             }
-        }
-
-        private void WriteColHeaders(Type type, StreamWriter streamWriter)
-        {
-            PropertyInfo[] propInfos = type.GetProperties(BindingFlags.Public | BindingFlags.Instance);
-
-            var propsAsStrings = new List<string>();
-
-            foreach (var propInfo in propInfos.Where(propInfo => propInfo.PropertyType.IsSupportedPropertyType()))
-            {
-                string label = null;
-                var displayAttrib = propInfo.GetFirstCustomAttribute<DisplayAttribute>();
-                if (displayAttrib != null)
-                {
-                    try
-                    {
-                        if (displayAttrib.ResourceType != null)
-                        {
-                            var resourceManager = new ResourceManager(displayAttrib.ResourceType);
-                            label = resourceManager.GetString(displayAttrib.Name);
-                        }
-                        else
-                        {
-                            label = displayAttrib.Name;
-                        }
-                    }
-                    catch
-                    {
-                        // ignored
-                    }
-                }
-
-                if(label == null)
-                {
-                    label = propInfo.Name;
-                }
-
-                propsAsStrings.Add(label);
-            }
-
-            streamWriter.WriteLine(string.Join(";", propsAsStrings));
-        }
-
-        private void WriteEntity(Type type, object entity, StreamWriter writer)
-        {
-            //writer.WriteLine("{0};{1};{2};{3}", Escape(person.Id),
-            //    Escape(person.FirstName), Escape(person.LastName), Escape(person.BirthDate), Escape(person.IsMale));
-            writer.WriteLine(FormatEntity(type, entity));
-        }
-
-        private string FormatEntity(Type type, object entity)
-        {
-            PropertyInfo[] propInfos = type.GetProperties(BindingFlags.Public | BindingFlags.Instance);
-
-            var propsAsStrings = new List<string>();
-
-            foreach (var propInfo in propInfos)
-            {
-                if(propInfo.PropertyType.IsSupportedPropertyType())
-                {
-                    string displayFormat = null;
-                    var displayFormatAttrib = propInfo.GetFirstCustomAttribute<DisplayFormatAttribute>();
-                    if (displayFormatAttrib != null)
-                    {
-                        displayFormat = displayFormatAttrib.DataFormatString;
-                    }
-
-                    var value = FormatProperty(propInfo.PropertyType, propInfo.GetValue(entity, null), displayFormat);
-                    propsAsStrings.Add(value);
-                }
-            }
-
-            return string.Join(";", propsAsStrings);
-        }
-
-        private string FormatProperty(Type type, object value, string format = null)
-        {
-            string stringValue;
-
-            if (type == typeof (DateTime))
-            {
-                var formatString = format ?? "G";
-                stringValue = TimeZoneInfo.ConvertTimeFromUtc(((DateTime)value).ToUniversalTime(), GetUserTimeZoneInfo()).ToString(formatString);
-            }
-            else if (type == typeof (DateTimeOffset))
-            {
-                var formatString = format ?? "G";
-                stringValue = TimeZoneInfo.ConvertTimeFromUtc(((DateTimeOffset)value).ToUniversalTime().DateTime, GetUserTimeZoneInfo()).ToString(formatString);
-            }
-            else if (type == typeof (decimal))
-            {
-                var formatString = format ?? "N2";
-                stringValue = ((decimal) value).ToString(formatString);
-            }
-            else
-            {
-                stringValue = value.ToString();
-            }
-            return CsvEscape(stringValue);
         }
 
         private TimeZoneInfo GetUserTimeZoneInfo()

@@ -67,38 +67,13 @@ namespace ExcelApiTest.Formatters
 
         private int WriteColumns(Type type, ExcelWorksheet ws)
         {
-            PropertyInfo[] propInfos = type.GetProperties(BindingFlags.Public | BindingFlags.Instance);
+            type.GetPropertyLabels();
 
             var colIndex = 0;
-            foreach (var propInfo in propInfos.Where(propInfo => propInfo.PropertyType.IsSupportedPropertyType()))
+            foreach (var propInfo in type.GetExportableProperties())
             {
                 colIndex++;
-                string label = null;
-                var displayAttrib = propInfo.GetFirstCustomAttribute<DisplayAttribute>();
-                if (displayAttrib != null)
-                {
-                    try
-                    {
-                        if (displayAttrib.ResourceType != null)
-                        {
-                            var resourceManager = new ResourceManager(displayAttrib.ResourceType);
-                            label = resourceManager.GetString(displayAttrib.Name);
-                        }
-                        else
-                        {
-                            label = displayAttrib.Name;
-                        }
-                    }
-                    catch
-                    {
-                        // ignored
-                    }
-                }
-
-                if (label == null)
-                {
-                    label = propInfo.Name;
-                }
+                string label = propInfo.GetDisplayAttributeValue() ?? propInfo.Name;
 
                 ws.Cells[1, colIndex].Value = label;
                 ApplyColumnFormat(propInfo, ws.Column(colIndex));
@@ -120,8 +95,7 @@ namespace ExcelApiTest.Formatters
         private void ApplyColumnFormat(PropertyInfo propertyInfo, ExcelColumn column)
         {
             var type = propertyInfo.PropertyType;
-            var formatAttrib = propertyInfo.GetFirstCustomAttribute<DisplayFormatAttribute>();
-            var format = formatAttrib != null ? formatAttrib.DataFormatString : null;
+            var format = propertyInfo.GetDisplayFormatAttributeValue();
 
             if (type == typeof(Decimal))
             {
@@ -141,15 +115,19 @@ namespace ExcelApiTest.Formatters
             foreach (var entity in entities)
             {
                 rowIndex++;
-                PropertyInfo[] propInfos = entityType.GetProperties(BindingFlags.Public | BindingFlags.Instance);
-
                 var colIndex = 0;
-                foreach (var propInfo in propInfos)
+
+                foreach (var propInfo in entityType.GetExportableProperties())
                 {
-                    if (propInfo.PropertyType.IsSupportedPropertyType())
+                    colIndex++;
+                    object value = propInfo.GetValue(entity, null);
+                    if (value.GetType().IsEnum)
                     {
-                        colIndex++;
-                        ws.Cells[rowIndex, colIndex].Value = propInfo.GetValue(entity, null);
+                        ws.Cells[rowIndex, colIndex].Value = propInfo.FormatAsString(entity);
+                    }
+                    else
+                    {
+                        ws.Cells[rowIndex, colIndex].Value = value;
                     }
                 }
 

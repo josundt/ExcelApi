@@ -1,23 +1,22 @@
 ﻿import {computedFrom, inject} from 'aurelia-framework';
 import {ObserverLocator} from 'aurelia-binding'; 
 import {QueryModel} from "views/QueryModel";
-import {PersonService} from "services/PersonService";
-import {PersonQueryOptions} from "services/PersonService";
+import {PeopleService, PeopleQueryOptions} from "services/PeopleService";
 import {DataType, PropertyInfo, FilterParameter, FilterOperator, FilterOperators, LabeledItem} from "services/OData";
 import {PersonMetadata, Person} from "services/modelmetadata";
 
-@inject(ObserverLocator, PersonService)
+@inject(ObserverLocator, PeopleService)
 export class GridPage {
     constructor(
         observerLocator: ObserverLocator,
-        personService: PersonService) {
+        peopleService: PeopleService) {
 
-        this._personService = personService;
+        this._peopleService = peopleService;
     }
 
-    private _personService: PersonService;
+    private _peopleService: PeopleService;
 
-    query: QueryModel = new QueryModel(PersonMetadata, true);
+    query: QueryModel = new QueryModel(PersonMetadata/*, 2*/);
 
     dataSource: Person[];
 
@@ -26,8 +25,12 @@ export class GridPage {
     getDataForGrid(): Promise<void> {
         return new Promise<void>((resolve, reject) => {
 
-            this._personService.getPersons(this.query.toQueryString()).then((data) => {
-                this.dataSource = data;
+            this._peopleService.getPersons(this.query.toQueryString()).then((data) => {
+                this.dataSource = data.value;
+                if (this.query.pagination) {
+                    this.query.pagination.pageNumber = 1;
+                    this.query.pagination.totalCount = data.count;
+                }
                 resolve();
             }).catch((error: Error) => {
                 reject();
