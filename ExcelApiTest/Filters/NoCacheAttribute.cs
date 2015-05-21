@@ -7,11 +7,14 @@ namespace ExcelApiTest.Filters
     {
         public override void OnActionExecuted(HttpActionExecutedContext context)
         {
-            context.Response.Headers.CacheControl = new CacheControlHeaderValue()
+            if (context != null && context.Response != null)
             {
-                NoCache = true,
-                Private = true
-            };
+                context.Response.Headers.CacheControl = new CacheControlHeaderValue()
+                {
+                    NoCache = true,
+                    Private = true
+                };
+            }
 
             base.OnActionExecuted(context);
         }

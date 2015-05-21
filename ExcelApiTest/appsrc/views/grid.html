@@ -19,17 +19,18 @@
             <nav class="text-center" if.bind="!!query.pagination">
                 <ul class="pagination">
                     <li>
-                        <a href="javascript://" aria-label="Previous" click.bind="query.pagination.prev()" enabled.bind="query.pagination.prevEnabled">
+                        <a href="javascript://" aria-label="Previous" click.trigger="query.pagination.prev()" enabled="${query.pagination.prevEnabled}">
                             <span aria-hidden="true">&laquo;</span>
                         </a>
                     </li>
-                    <li><a href="#">1</a></li>
-                    <li><a href="#">2</a></li>
-                    <li><a href="#">3</a></li>
-                    <li><a href="#">4</a></li>
-                    <li><a href="#">5</a></li>
+
+                    <li show.bind="query.pagination.pageCount > 0" class="${(query.pagination.pageNumber - 2 < 1 ? 1 : (query.pagination.pageNumber - 2)) === query.pagination.pageNumber ? 'active' : ''}"><a href="#" textcontent="${query.pagination.pageNumber - 2 < 1 ? 1 : (query.pagination.pageNumber - 2)}" click.trigger="query.pagination.gotoPage(query.pagination.pageNumber - 2 < 1 ? 1 : (query.pagination.pageNumber - 2))"></a></li>
+                    <li show.bind="query.pagination.pageCount > 1" class="${(query.pagination.pageNumber - 1 < 2 ? 2 : (query.pagination.pageNumber - 1)) === query.pagination.pageNumber ? 'active' : ''}"><a href="#" textcontent="${query.pagination.pageNumber - 1 < 2 ? 2 : (query.pagination.pageNumber - 1)}" click.trigger="query.pagination.gotoPage(query.pagination.pageNumber - 1 < 2 ? 2 : (query.pagination.pageNumber - 1))"></a></li>
+                    <li show.bind="query.pagination.pageCount > 2" class="${(query.pagination.pageNumber     < 3 ? 3 : (query.pagination.pageNumber))     === query.pagination.pageNumber ? 'active' : ''}"><a href="#" textcontent="${query.pagination.pageNumber     < 3 ? 3 : (query.pagination.pageNumber    )}" click.trigger="query.pagination.gotoPage(query.pagination.pageNumber     < 3 ? 3 : (query.pagination.pageNumber    ))"></a></li>
+                    <li show.bind="query.pagination.pageCount > 3" class="${(query.pagination.pageNumber + 1 < 4 ? 4 : (query.pagination.pageNumber + 1)) === query.pagination.pageNumber ? 'active' : ''}"><a href="#" textcontent="${query.pagination.pageNumber + 1 < 4 ? 4 : (query.pagination.pageNumber + 1)}" click.trigger="query.pagination.gotoPage(query.pagination.pageNumber + 1 < 4 ? 4 : (query.pagination.pageNumber + 1))"></a></li>
+                    <li show.bind="query.pagination.pageCount > 4" class="${(query.pagination.pageNumber + 2 < 5 ? 5 : (query.pagination.pageNumber + 2)) === query.pagination.pageNumber ? 'active' : ''}"><a href="#" textcontent="${query.pagination.pageNumber + 2 < 5 ? 5 : (query.pagination.pageNumber + 2)}" click.trigger="query.pagination.gotoPage(query.pagination.pageNumber + 2 < 5 ? 5 : (query.pagination.pageNumber + 2))"></a></li>
                     <li>
-                        <a href="javascript://" aria-label="Next" click.bind="query.pagination.next()" enabled.bind="query.pagination.prevEnabled">
+                        <a href="javascript://" aria-label="Next" click.trigger="query.pagination.next()" enabled="${query.pagination.prevEnabled}">
                             <span aria-hidden="true">&raquo;</span>
                         </a>
                     </li>

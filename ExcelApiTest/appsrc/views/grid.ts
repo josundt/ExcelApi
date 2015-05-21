@@ -12,6 +12,9 @@ export class GridPage {
         peopleService: PeopleService) {
 
         this._peopleService = peopleService;
+        this.query = new QueryModel(PersonMetadata, "FirstName", 10, () => {
+            this._getDataForGrid();
+        });
     }
 
     private _peopleService: PeopleService;
@@ -22,13 +25,12 @@ export class GridPage {
 
     entityProps: LabeledItem<PropertyInfo>[] = PersonMetadata.properties;
 
-    getDataForGrid(): Promise<void> {
+    private _getDataForGrid(): Promise<void> {
         return new Promise<void>((resolve, reject) => {
 
             this._peopleService.getPersons(this.query.toQueryString()).then((data) => {
                 this.dataSource = data.value;
                 if (this.query.pagination) {
-                    this.query.pagination.pageNumber = 1;
                     this.query.pagination.totalCount = data.count;
                 }
                 resolve();
@@ -44,7 +46,7 @@ export class GridPage {
     }
     
     activate(): Promise<void> {
-        return this.getDataForGrid(); 
+        return this._getDataForGrid(); 
     }
 }
 

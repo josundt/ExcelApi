@@ -4,7 +4,6 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Reflection;
 using System.Resources;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace ExcelApiTest.Formatters
 {

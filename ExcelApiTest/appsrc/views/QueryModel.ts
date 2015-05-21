@@ -1,20 +1,31 @@
 ﻿import {computedFrom} from 'aurelia-framework';
+import {ObserverLocator} from 'aurelia-binding'; 
 
 import {array} from "core/utils";
 import {PropertyInfo, FilterOperator, FilterOperators, DataType, EntityMetadata, LabeledItem} from "services/OData";
 
-
 export class QueryModel {
     constructor(
         metadata: EntityMetadata,
-        pageSize?: number) {
+        defaultSort?: string,
+        pageSize?: number,
+        changeHandler?: () => void) {
 
         this.metadata = metadata;
+        if (defaultSort) {
+            let property = array.firstOrDefault(metadata.properties, pi => pi.value.name === defaultSort);
+            if (!property) {
+                throw new Error("Invalid argument defaultSort: Property does not exist");
+            }
+            this.sortings.push(new Sorting(property, false));
+        }
         if (pageSize !== undefined) {
-            this.pagination = new Pagination(pageSize);
+            this.pagination = new Pagination(pageSize, changeHandler);
         }
     }
+
     private _odataVersion = 4;
+
     metadata: EntityMetadata;
     get properties(): LabeledItem<PropertyInfo>[] {
         return this.metadata.properties;
@@ -39,7 +50,7 @@ export class QueryModel {
 
         let sortings = this.sortings;
         if (sortings && sortings.length > 0) {
-            var sortParams: string[] = [];
+            let sortParams: string[] = [];
             sortings.forEach((sorting) => {
                 let property: PropertyInfo = sorting.property.value;
                 let direction: string = sorting.descending ? encodeURIComponent(" desc") : "";
@@ -74,7 +85,11 @@ export class QueryModel {
         }
 
         if (this.pagination !== null) {
-            queryParams.push(`$top=${this.pagination.pageSize}`);
+            let p = this.pagination;
+            queryParams.push(`$top=${p.pageSize}`);
+            if (p.pageNumber > 1) {
+                queryParams.push(`$skip=${(p.pageNumber * p.pageSize) - p.pageSize}`);
+            }
             queryParams.push(this._odataVersion >= 4 ? "$count=true" : "$inlinecount=allpages");
         }
 
@@ -111,29 +126,60 @@ export class Filter {
 }
 
 export class Sorting {
+    constructor(property?: LabeledItem<PropertyInfo>, descending?: boolean) {
+        this.property = property || null;
+        this.descending = !!descending;
+    }
+
     property: LabeledItem<PropertyInfo> = null;
 
     descending: boolean = false;
 }
 
 export class Pagination {
-    constructor(pageSize: number) {
-        this.pageSize = pageSize;
+    constructor(pageSize: number, changeHandler: () => void) {
+        this._pageSize = pageSize;
+        this._changeHandler = changeHandler;
     }
-    pageSize: number = null;
-    totalCount: number = null;
-    pageNumber: number = 0;
+
+    private _changeHandler: () => void;
+
+    private _pageSize: number;
+    get pageSize(): number { return this._pageSize; }
+
+    private _totalCount: number = null;
+    get totalCount(): number { return this._totalCount };
+    set totalCount(value: number) { this._totalCount = value; }
+
+    private _pageNumber: number = 1;
+    get pageNumber(): number { return this._pageNumber };
+    set pageNumber(value: number) {
+        if (value !== this._pageNumber) {
+            this._pageNumber = value;
+            this._changeHandler();
+        }
+    }
 
     @computedFrom("totalCount", "pageSize")
     get enabled(): boolean {
         return !!this.totalCount && !!this.pageSize;
     }
 
+    @computedFrom("totalCount", "pageSize")
+    get pageCount(): number {
+        var result = 0;
+        let tot = this._totalCount;
+        let ps = this._pageSize;
+        if (!!tot && !!ps) {
+            result = (tot % ps) ? Math.floor(tot / ps) + 1 : tot / ps;
+        }
+        return result;
+    }
 
     @computedFrom("totalCount", "pageSize", "pageNumber")
     get nextEnabled(): boolean {
         return !!this.totalCount && !!this.pageSize &&
-            (this.totalCount % (this.pageNumber * this.pageSize) > this.pageSize);
+            (this.pageNumber * this.pageSize) < this.totalCount;
     }
 
     @computedFrom("totalCount", "pageSize", "pageNumber")
@@ -150,6 +196,12 @@ export class Pagination {
     next(): void {
         if (this.nextEnabled) {
             this.pageNumber += 1;
+        }
+    }
+
+    gotoPage(pageNumber: number): void {
+        if (pageNumber > 0 && pageNumber <= this.pageCount) {
+            this.pageNumber = pageNumber;
         }
     }
 

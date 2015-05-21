@@ -1,20 +1,10 @@
-﻿using System;
-using System.Globalization;
+﻿using System.Globalization;
 using System.Threading;
-using System.Threading.Tasks;
 using System.Web.Http;
-using System.Web.Http.Batch;
-using System.Web.OData;
 using System.Web.OData.Builder;
 using System.Web.OData.Extensions;
-using System.Web.UI.WebControls.WebParts;
-using ExcelApiTest.Data;
-using ExcelApiTest.Filters;
-using ExcelApiTest.Formatters;
 using ExcelApiTest.Model;
-using Microsoft.Framework.DependencyInjection;
 using Microsoft.OData.Edm;
-using Newtonsoft.Json.Converters;
 using Owin;
 
 namespace ExcelApiTest

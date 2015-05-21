@@ -2,6 +2,7 @@
 using System.Web.Http;
 using System.Web.OData;
 using ExcelApiTest.Data;
+using ExcelApiTest.Filters;
 
 namespace ExcelApiTest.Controllers.OData
 {
@@ -16,13 +17,11 @@ namespace ExcelApiTest.Controllers.OData
             _dataStore = new DataStore();
         }
 
-        //[NoCache]
-        //[EnableQuery(AllowedQueryOptions = AllowedQueryOptions.Count)]
-        //[Route("people")]        [HttpGet]
+        [NoCache]
         [EnableQuery]
         public IHttpActionResult Get()
         {
-            return Ok(this._dataStore.Persons.AsQueryable()); //Ok(_dataStore.Persons.AsQueryable());
+            return Ok(this._dataStore.Persons.AsQueryable());
         }
     }
 }
