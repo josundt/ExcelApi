@@ -1,29 +1,18 @@
 ﻿import {computedFrom, inject} from 'aurelia-framework';
-import {ObserverLocator} from 'aurelia-binding'; 
 import {QueryModel} from "views/QueryModel";
-import {PeopleService, PeopleQueryOptions} from "services/PeopleService";
+import {PeopleService} from "services/PeopleService";
 import {PropertyInfo, FilterParameter, FilterOperator, FilterOperators, LabeledItem} from "services/OData";
 import {cookies, array} from "core/utils";
 import {PersonMetadata} from "services/modelmetadata";
 
-@inject(ObserverLocator, PeopleService)
+@inject(PeopleService)
 export default class CustomQueryPage {
 
-    constructor(
-        observerLocator: ObserverLocator,
-        peopleService: PeopleService) {
-
-        this._disposables.push(
-            observerLocator
-                .getObserver(this, "language")
-                .subscribe(this._onLanguageChange));
-
+    constructor(peopleService: PeopleService) {
         this._peopleService = peopleService; 
     }
 
     private _peopleService: PeopleService;
-
-    private _disposables: Array<() => void> = [];
 
     outputTypes: LabeledItem<string>[] = [
         { text: "Excel (xslx)", value: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" },
@@ -31,24 +20,9 @@ export default class CustomQueryPage {
         { text: "JSON", value: "application/json" },
         { text: "XML", value: "text/xml" }
     ];
-    languages: LabeledItem<string>[] = [
-        { text: "English (US)", value: "en-US" },
-        { text: "English (UK)", value: "en-GB" },
-        { text: "Norwegian", value: "nb-NO" }
-    ];
     entityProps: LabeledItem<PropertyInfo>[] = PersonMetadata.properties;
 
     outputType: LabeledItem<string> = this.outputTypes[0];
-    language: LabeledItem<string> = this.languages[0];
-
-    @computedFrom("outputType")
-    get languageSelectorVisible(): boolean {
-        let outputType = this.outputType;
-        let languageSupportedOutputTypes = [
-            "text/csv",
-            "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"];
-        return languageSupportedOutputTypes.some(lsot => outputType.value === lsot);
-    }
 
     sortProperty: LabeledItem<PropertyInfo> = this.entityProps[0];
     sortDescending: boolean = false;
@@ -60,14 +34,10 @@ export default class CustomQueryPage {
     lastQueryString: string = null;
 
     getData() {
-        let options: PeopleQueryOptions = {
-            acceptHeader: this.outputType.value,
-            acceptLanguageHeader: this.language.value,
-        };
 
         let queryString = this.query.toQueryString();
 
-        this._peopleService.getPersonsRaw(queryString, options).then((data: string) => {
+        this._peopleService.getPersonsRaw(queryString, this.outputType.value).then((data: string) => {
             this.rawResponseBody = data;
             this.lastQueryString = queryString;
         }).catch((error: Error) => {
@@ -75,15 +45,6 @@ export default class CustomQueryPage {
         });
     }
 
-    private _onLanguageChange(languageItem: LabeledItem<string>) {
-        cookies.add("language", languageItem.value);
-    }
-
-    deactivate() {
-        for (let disposable of this._disposables) {
-            disposable();
-        }
-    }
 }
 
 export class QueryReadablifyValueConverter {

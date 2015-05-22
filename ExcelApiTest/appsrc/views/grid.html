@@ -4,10 +4,35 @@
         <h1 class="page-header">Grid Sample - OData WebAPI Output Format</h1>
 
         <div>
-            <table class="table">
+            <div class="row panel panel-default">
+                <div class="panel-heading" style="padding-right: 2px;">
+                    <button type="button" style="margin-top: -8px;" class="btn btn-success pull-right" title="Apply filter" click.delegate="getData()"><i class="glyphicon glyphicon-filter"></i></button>
+                    <button type="button" style="margin-top: -8px; margin-right: 1px;" class="btn btn-default pull-right" title="Add filter predicate" click.delegate="query.addFilter()"><i class="glyphicon glyphicon-plus"></i></button>
+                    <h3 class="panel-title">Filters:</h3>
+                </div>
+                <div class="panel-body" visible.bind="!!query.filters.length">
+                    <div class="col-md-3 form-group-sm well well-sm" repeat.for="filter of query.filters">
+                        <span class="small" visible.bind="$index > 0">...and...</span>
+                        <button type="button" class="close pull-right danger" click.delegate="$parent.query.removeFilter(filter)">&times;</button>
+                        <select class="form-control" value.bind="filter.property">
+                            <option repeat.for="prop of $parent.query.properties" model.bind="prop">${prop.text}</option>
+                        </select>
+                        <select class="form-control" value.bind="filter.operator">
+                            <option repeat.for="op of filter.operators" model.bind="op">${op.text}</option>
+                        </select>
+                        <input type="text" class="form-control" value.bind="filter.value"/>
+                    </div>
+                </div>
+            </div>
+
+
+            <table class="table" style="table-layout: fixed;">
                 <thead>
                 <tr>
-                    <th repeat.for="prop of entityProps">${prop.text}</th>
+                    <th repeat.for="prop of entityProps" class="${$parent.query.sortings[0].property === prop ? 'active' : ''}">
+                        <a href="javascript://" aria-label="Sort" click.trigger="$parent.query.toggleSorting(prop)">${prop.text}</a>
+                        <i class="${$parent.query.sortings[0].descending ? 'caret' : 'caret-up'}" visible.bind="$parent.query.sortings[0].property === prop"></i>
+                    </th>
                 </tr>
                 </thead>
                 <tbody>
@@ -15,22 +40,29 @@
                     <td repeat.for="prop of $parent.entityProps">${$parent.item[prop.value.name] | displayFormat} </td>
                 </tr>
                 </tbody>
+                <tfoot>
+                <tr>
+                    <td colspan.bind="entityProps.length">
+                        <div class="btn-group pull-right">
+                            <button type="button" class="btn btn-info" title="Download as Excel document" click.delegate="exportToExcel()"><i class="glyphicon glyphicon-save"></i> Download</button>
+                            <button type="button" class="btn btn-info" title="Download all pages as Excel document" click.delegate="exportToExcel(true)"><i class="glyphicon glyphicon-save"></i> Download all pages</button>
+                        </div>
+                    </td>
+                </tr>
+                </tfoot>
             </table>
             <nav class="text-center" if.bind="!!query.pagination">
                 <ul class="pagination">
                     <li>
-                        <a href="javascript://" aria-label="Previous" click.trigger="query.pagination.prev()" enabled="${query.pagination.prevEnabled}">
+                        <a href="javascript://" aria-label="Previous" click.trigger="query.pagination.prev()" enabled.bind="query.pagination.prevEnabled">
                             <span aria-hidden="true">&laquo;</span>
                         </a>
                     </li>
 
-                    <li show.bind="query.pagination.pageCount > 0" class="${(query.pagination.pageNumber - 2 < 1 ? 1 : (query.pagination.pageNumber - 2)) === query.pagination.pageNumber ? 'active' : ''}"><a href="#" textcontent="${query.pagination.pageNumber - 2 < 1 ? 1 : (query.pagination.pageNumber - 2)}" click.trigger="query.pagination.gotoPage(query.pagination.pageNumber - 2 < 1 ? 1 : (query.pagination.pageNumber - 2))"></a></li>
-                    <li show.bind="query.pagination.pageCount > 1" class="${(query.pagination.pageNumber - 1 < 2 ? 2 : (query.pagination.pageNumber - 1)) === query.pagination.pageNumber ? 'active' : ''}"><a href="#" textcontent="${query.pagination.pageNumber - 1 < 2 ? 2 : (query.pagination.pageNumber - 1)}" click.trigger="query.pagination.gotoPage(query.pagination.pageNumber - 1 < 2 ? 2 : (query.pagination.pageNumber - 1))"></a></li>
-                    <li show.bind="query.pagination.pageCount > 2" class="${(query.pagination.pageNumber     < 3 ? 3 : (query.pagination.pageNumber))     === query.pagination.pageNumber ? 'active' : ''}"><a href="#" textcontent="${query.pagination.pageNumber     < 3 ? 3 : (query.pagination.pageNumber    )}" click.trigger="query.pagination.gotoPage(query.pagination.pageNumber     < 3 ? 3 : (query.pagination.pageNumber    ))"></a></li>
-                    <li show.bind="query.pagination.pageCount > 3" class="${(query.pagination.pageNumber + 1 < 4 ? 4 : (query.pagination.pageNumber + 1)) === query.pagination.pageNumber ? 'active' : ''}"><a href="#" textcontent="${query.pagination.pageNumber + 1 < 4 ? 4 : (query.pagination.pageNumber + 1)}" click.trigger="query.pagination.gotoPage(query.pagination.pageNumber + 1 < 4 ? 4 : (query.pagination.pageNumber + 1))"></a></li>
-                    <li show.bind="query.pagination.pageCount > 4" class="${(query.pagination.pageNumber + 2 < 5 ? 5 : (query.pagination.pageNumber + 2)) === query.pagination.pageNumber ? 'active' : ''}"><a href="#" textcontent="${query.pagination.pageNumber + 2 < 5 ? 5 : (query.pagination.pageNumber + 2)}" click.trigger="query.pagination.gotoPage(query.pagination.pageNumber + 2 < 5 ? 5 : (query.pagination.pageNumber + 2))"></a></li>
+                    <li repeat.for="btn of query.pagination.buttons" class="${$parent.query.pagination.pageNumber === btn.pageNumber  ? 'active' : ''}"><a href="javascript://" style="min-width: 3em;" textcontent="${btn.pageNumber}" click.delegate="$parent.query.pagination.gotoPage(btn.pageNumber)"></a></li>
+
                     <li>
-                        <a href="javascript://" aria-label="Next" click.trigger="query.pagination.next()" enabled="${query.pagination.prevEnabled}">
+                        <a href="javascript://" aria-label="Next" click.trigger="query.pagination.next()" enabled.bind="query.pagination.nextEnabled">
                             <span aria-hidden="true">&raquo;</span>
                         </a>
                     </li>

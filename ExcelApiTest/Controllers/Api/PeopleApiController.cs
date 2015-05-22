@@ -21,7 +21,7 @@ namespace ExcelApiTest.Controllers.Api
         }
 
         [NoCache]
-        [EnableQuery(AllowedQueryOptions = AllowedQueryOptions.Count)]
+        [EnableQuery]
         [Route("people")]
         [HttpGet]
         public IQueryable<Person> People()

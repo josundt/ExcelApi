@@ -157,11 +157,13 @@
     <Reference Include="System.EnterpriseServices" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="appsrc\styles\styles.css" />
     <Content Include="appsrc\views\app.html" />
     <Content Include="appsrc\views\grid.html" />
     <Content Include="appsrc\views\query.html" />
     <Content Include="appsrc\views\nav-bar.html" />
     <Content Include="build\paths.js" />
+    <Content Include="build\tasks\build-css.js" />
     <Content Include="build\tasks\build-typescript.js" />
     <Content Include="build\tasks\build-html.js" />
     <Content Include="build\tasks\build.js" />
@@ -169,6 +171,7 @@
     <Content Include="build\tasks\clean-lib.js" />
     <Content Include="build\tasks\clean.js" />
     <Content Include="build\tasks\copy-lib.js" />
+    <Content Include="build\tasks\watch-css.js" />
     <Content Include="build\tasks\watch-html.js" />
     <Content Include="gulpfile.js" />
     <Content Include="aurelia\aurelia-bundle-latest.js" />

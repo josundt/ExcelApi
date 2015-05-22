@@ -18,13 +18,20 @@
                 <li repeat.for="row of router.navigation" class="${row.isActive ? 'active' : ''}">
                     <a data-toggle="collapse" data-target="#bs-example-navbar-collapse-1.in" href.bind="row.href">${row.title}</a>
                 </li>
-            </ul>
-
-            <ul class="nav navbar-nav navbar-right">
-                <li class="loader" if.bind="router.isNavigating">
-                    <i class="fa fa-spinner fa-spin fa-2x"></i>
+                <li>
+                    <form class="navbar-form">
+                        <select class="form-control" style="width: 100%;" title="Text/formatting language" value.bind="language">
+                            <option repeat.for="lang of languages" model.bind="lang">${lang.text}</option>
+                        </select>
+                    </form>
                 </li>
             </ul>
+
+        <ul class="nav navbar-nav navbar-right">
+            <li class="loader" if.bind="router.isNavigating">
+                <i class="fa fa-spinner fa-spin fa-2x"></i>
+            </li>
+        </ul>
         </div>
     </nav>
 </template>

@@ -1,11 +1,5 @@
 ﻿export module http {
-    export function get(
-        url: string,
-        acceptHeader: string,
-        acceptLanguageHeader: string
-        //fnSuccess: (data: string) => void,
-        //fnError?: (status: number, xhr: XMLHttpRequest) => void
-        ): Promise<string> {
+    export function get(url: string, acceptHeader: string): Promise<string> {
 
         return new Promise((resolve, reject) => {
             let xhr = new XMLHttpRequest();
@@ -23,7 +17,7 @@
             }
             xhr.open("GET", url, true);
             xhr.setRequestHeader("Accept", acceptHeader || "application/json");
-            xhr.setRequestHeader("Accept-Language", acceptLanguageHeader || "en-US");
+            xhr.setRequestHeader("Accept-Language", cookies.get("language") || "en-US");
             xhr.send();
         });
     }

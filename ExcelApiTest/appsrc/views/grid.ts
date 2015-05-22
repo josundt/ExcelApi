@@ -1,7 +1,7 @@
-﻿import {computedFrom, inject} from 'aurelia-framework';
+﻿import {computedFrom, inject, customAttribute} from 'aurelia-framework';
 import {ObserverLocator} from 'aurelia-binding'; 
 import {QueryModel} from "views/QueryModel";
-import {PeopleService, PeopleQueryOptions} from "services/PeopleService";
+import {PeopleService} from "services/PeopleService";
 import {DataType, PropertyInfo, FilterParameter, FilterOperator, FilterOperators, LabeledItem} from "services/OData";
 import {PersonMetadata, Person} from "services/modelmetadata";
 
@@ -13,19 +13,19 @@ export class GridPage {
 
         this._peopleService = peopleService;
         this.query = new QueryModel(PersonMetadata, "FirstName", 10, () => {
-            this._getDataForGrid();
+            this.getData();
         });
     }
 
     private _peopleService: PeopleService;
 
-    query: QueryModel = new QueryModel(PersonMetadata/*, 2*/);
+    query: QueryModel;
 
     dataSource: Person[];
 
     entityProps: LabeledItem<PropertyInfo>[] = PersonMetadata.properties;
 
-    private _getDataForGrid(): Promise<void> {
+    getData(): Promise<void> {
         return new Promise<void>((resolve, reject) => {
 
             this._peopleService.getPersons(this.query.toQueryString()).then((data) => {
@@ -41,12 +41,12 @@ export class GridPage {
         });
     }
 
-    getDataForExcel(): void {
-        location.assign(`/persons{this.query.toQueryString()}`);
+    exportToExcel(allPages?: boolean): void {
+        this._peopleService.getPersonsAsExcel(this.query.toQueryString(), allPages);
     }
     
     activate(): Promise<void> {
-        return this._getDataForGrid(); 
+        return this.getData(); 
     }
 }
 
@@ -73,5 +73,39 @@ export class DisplayFormatValueConverter {
             result = value.toString();
         }
         return result;
+    }
+}
+
+@customAttribute("enabled")
+@inject(Element)
+export class EnabledAttributeBinder {
+    constructor(private _element: HTMLAnchorElement) { }
+
+    valueChanged(newValue: boolean) {
+        if (!!newValue) {
+            this._element.removeAttribute("disabled");
+        } else {
+            this._element.setAttribute("disabled", "disabled");
+        }
+    }
+}
+
+@customAttribute("visible")
+@inject(Element)
+export class VisibleAttributeBinder {
+    constructor(private _element: HTMLAnchorElement) { }
+
+    valueChanged(newValue: boolean) {
+        this._element.style.display = newValue ? "" : "none";
+    }
+}
+
+@customAttribute("colspan")
+@inject(Element)
+export class ColspanAttributeBinder {
+    constructor(private _element: HTMLTableCellElement) { }
+
+    valueChanged(newValue: number) {
+        this._element.colSpan = newValue;
     }
 }

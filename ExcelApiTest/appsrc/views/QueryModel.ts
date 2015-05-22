@@ -22,8 +22,11 @@ export class QueryModel {
         if (pageSize !== undefined) {
             this.pagination = new Pagination(pageSize, changeHandler);
         }
+
+        this._changeHandler = changeHandler;
     }
 
+    private _changeHandler: () => void;
     private _odataVersion = 4;
 
     metadata: EntityMetadata;
@@ -44,6 +47,26 @@ export class QueryModel {
     }
     removeSorting(sorting: Sorting): void {
         array.remove(this.sortings, s => s === sorting);
+    }
+    toggleSorting(property: LabeledItem<PropertyInfo>): void {
+        let lastSorting = this.sortings.length ? this.sortings.shift() : null;
+        let descending = false;
+        if (lastSorting && lastSorting.property === property) {
+            descending = !lastSorting.descending;
+        }
+        this.sortings.unshift(new Sorting(property, descending));
+
+
+        if (this.pagination) {
+            if (this.pagination.pageNumber === 1) {
+                this._changeHandler();
+            } else {
+                this.pagination.pageNumber = 1;
+            }
+        } else {
+            this._changeHandler();
+        }
+        
     }
     toQueryString(): string {
         let queryParams: string[] = [];
@@ -178,14 +201,29 @@ export class Pagination {
 
     @computedFrom("totalCount", "pageSize", "pageNumber")
     get nextEnabled(): boolean {
-        return !!this.totalCount && !!this.pageSize &&
+        var result = !!this.totalCount && !!this.pageSize &&
             (this.pageNumber * this.pageSize) < this.totalCount;
+        return result;
     }
 
     @computedFrom("totalCount", "pageSize", "pageNumber")
     get prevEnabled(): boolean {
-        return !!this.totalCount && !!this.pageSize && !!this.pageNumber && this.pageNumber > 1;
+        var result = !!this.totalCount && !!this.pageSize && !!this.pageNumber && this.pageNumber > 1;
+        return result;
     }
+
+    @computedFrom("pageCount", "pageNumber")
+    get buttons(): { pageNumber: number; active: boolean; }[] {
+        let buttons: { pageNumber: number; active: boolean; }[] = [];
+        const maxButtons = 11;
+        let buttonCount = Math.min(maxButtons, this.pageCount);
+        let buttonNumber = Math.min(this.pageCount - buttonCount + 1, Math.max(1, this.pageNumber - Math.floor(buttonCount / 2)));
+        for (let i = buttonNumber; i < buttonCount + buttonNumber; i++) {
+            buttons.push({ pageNumber: i, active: i === this._pageNumber });
+        }
+        return buttons;
+    }
+
 
     prev(): void {
         if (this.prevEnabled) {
@@ -206,3 +244,4 @@ export class Pagination {
     }
 
 }
+
