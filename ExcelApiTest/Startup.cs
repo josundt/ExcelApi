@@ -5,6 +5,7 @@ using System.Web.OData.Builder;
 using System.Web.OData.Extensions;
 using ExcelApiTest.Model;
 using Microsoft.OData.Edm;
+using Newtonsoft.Json.Converters;
 using Owin;
 
 namespace ExcelApiTest
@@ -41,11 +42,11 @@ namespace ExcelApiTest
             });
             
             var config = new HttpConfiguration();
-			
-            //config.Formatters.JsonFormatter.Indent = true;
-            //config.Formatters.JsonFormatter.SerializerSettings.Converters.Add(new StringEnumConverter());
-			
-            //config.Formatters.XmlFormatter.Indent = true;
+
+            config.Formatters.JsonFormatter.Indent = true;
+            config.Formatters.JsonFormatter.SerializerSettings.Converters.Add(new StringEnumConverter());
+
+            config.Formatters.XmlFormatter.Indent = true;
 
             config.MapHttpAttributeRoutes();
 		    config.Routes.MapHttpRoute(

@@ -1,71 +1,68 @@
 ﻿<template>
     <div class="container">
 
-        <h1 class="page-header">Query Sample - OData WebAPI Output Format</h1>
+        <h3 class="page-header">Query Demo</h3>
 
-        <div class="row">
-            <div class="col-md-5">
-                <form class="form form-inline" submit.delegate="getData()">
-                    <div class="form-group" style="display: block;">
-                        <select class="form-control" style="width: 100%;" title="Output format" value.bind="outputType">
-                            <option repeat.for="type of outputTypes" model.bind="type">${type.text}</option>
+        <form class="form" submit.delegate="getData()">
+
+            <div class="row panel panel-default">
+                <div class="panel-heading" style="padding-right: 2px;">
+                    <button type="button" style="margin-top: -8px;" class="btn btn-default pull-right" title="Add sorting" click.delegate="query.addSorting()"><i class="glyphicon glyphicon-plus"></i></button>
+                    <h3 class="panel-title">Sort criterias:</h3>
+                </div>
+                <div class="panel-body" visible.bind="!!query.sortings.length">
+                    <div class="col-md-3 form-group-sm well well-sm" repeat.for="sorting of query.sortings">
+                        <span class="small" visible.bind="$index > 0">...then by...</span>
+                        <button type="button" class="close pull-right danger" click.delegate="$parent.query.removeSorting(sorting)">&times;</button>
+                        <select id="sortBy" class="form-control" value.bind="sorting.property">
+                            <option repeat.for="prop of $parent.query.properties" model.bind="prop">${prop.text}</option>
                         </select>
-                    </div>
-                    <br/>
-                    <div class="panel panel-default">
-                        <div class="panel-heading">
-                            <h3 class="panel-title">Sort criterias:</h3>
-                        </div>
-                        <div class="panel-body">
-                            <div class="form-group-sm well well-sm" repeat.for="sorting of query.sortings">
-                                <button type="button" class="close pull-right danger" click.delegate="$parent.query.removeSorting(sorting)">&times;</button>
-                                <select id="sortBy" class="form-control" value.bind="sorting.property">
-                                    <option repeat.for="prop of $parent.query.properties" model.bind="prop">${prop.text}</option>
-                                </select>
-                                <div class="checkbox checkbox-inline">
-                                    <label style="font-size: 12px"><input type="checkbox" checked.bind="sorting.descending"/> descending</label>
-                                </div>
-                            </div>
-                            <button type="button" class="btn btn-info pull-right" title="Add sort criteria" click.delegate="query.addSorting()">+</button>
+                        <div class="checkbox checkbox-inline">
+                            <label style="font-size: 12px"><input type="checkbox" checked.bind="sorting.descending" /> descending</label>
                         </div>
                     </div>
-
-                    <div class="panel panel-default">
-                        <div class="panel-heading">
-                            <h3 class="panel-title">Filter predicates:</h3>
-                        </div>
-                        <div class="panel-body">
-                            <div class="form-group-sm well well-sm" repeat.for="filter of query.filters">
-                                <button type="button" class="close pull-right danger" click.delegate="$parent.query.removeFilter(filter)">&times;</button>
-                                <select class="form-control" value.bind="filter.property">
-                                    <option repeat.for="prop of $parent.query.properties" model.bind="prop">${prop.text}</option>
-                                </select>
-                                <select class="form-control" value.bind="filter.operator">
-                                    <option repeat.for="op of filter.operators" model.bind="op">${op.text}</option>
-                                </select>
-                                <input type="text" class="form-control" value.bind="filter.value"/>
-                            </div>
-                            <button type="button" class="btn btn-info pull-right" title="Add filter predicate" click.delegate="query.addFilter()">+</button>
-                        </div>
-                    </div>
-
-
-                    <div>
-                        <hr />
-                    </div>
-                    <div class="form-group">
-                        <button type="submit" class="btn btn-info form-control">Get data!</button>
-                    </div>
-                </form>
-            </div>
-            <div class="col-md-7">
-                <div class="form-group">
-                    <label for="output" show.bind="!!lastQueryString">Request</label>
-                    <pre id="output" style="font-size: x-small" show.bind="!!lastQueryString">${lastQueryString | queryReadablify}</pre>
-                    <label for="output" show.bind="!!rawResponseBody">Response</label>
-                    <pre id="output" style="font-size: x-small" show.bind="!!rawResponseBody">${rawResponseBody}</pre>
                 </div>
             </div>
-        </div>
+
+            <div class="row panel panel-default">
+                <div class="panel-heading" style="padding-right: 2px;">
+                    <button type="button" style="margin-top: -8px;" class="btn btn-default pull-right" title="Add filter predicate" click.delegate="query.addFilter()"><i class="glyphicon glyphicon-plus"></i></button>
+                    <h3 class="panel-title">Filter predicates:</h3>
+                </div>
+                <div class="panel-body" visible.bind="!!query.filters.length">
+                    <div class="col-md-3 form-group-sm well well-sm" repeat.for="filter of query.filters">
+                        <span class="small" visible.bind="$index > 0">...and...</span>
+                        <button type="button" class="close pull-right danger" click.delegate="$parent.query.removeFilter(filter)">&times;</button>
+                        <select class="form-control" value.bind="filter.property">
+                            <option repeat.for="prop of $parent.query.properties" model.bind="prop">${prop.text}</option>
+                        </select>
+                        <select class="form-control" value.bind="filter.operator">
+                            <option repeat.for="op of filter.operators" model.bind="op">${op.text}</option>
+                        </select>
+                        <input type="text" class="form-control" value.bind="filter.value" />
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6 form-group form-inline">
+                    <label for="outputformat">Output format</label>
+                    <select id="outputformat" class="form-control" title="Output format" value.bind="outputType">
+                        <option repeat.for="type of outputTypes" model.bind="type">${type.text}</option>
+                    </select>
+                </div>
+                <div class="col-md-6">
+                    <button type="submit" class="btn btn-info pull-right">Get data!</button>
+                </div>
+            </div>
+
+            <div>
+                <label for="output" show.bind="!!lastQueryString">Request</label>
+                <pre id="output" style="font-size: x-small" show.bind="!!lastQueryString">${lastQueryString | queryReadablify}</pre>
+                <label for="output" show.bind="!!rawResponseBody">Response</label>
+                <pre id="output" style="font-size: x-small" show.bind="!!rawResponseBody">${rawResponseBody}</pre>
+            </div>
+
+        </form>
     </div>
 </template>

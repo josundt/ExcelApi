@@ -4,6 +4,7 @@ import {QueryModel} from "views/QueryModel";
 import {PeopleService} from "services/PeopleService";
 import {DataType, PropertyInfo, FilterParameter, FilterOperator, FilterOperators, LabeledItem} from "services/OData";
 import {PersonMetadata, Person} from "services/modelmetadata";
+import {array} from "core/utils";
 
 @inject(ObserverLocator, PeopleService)
 export class GridPage {
@@ -12,7 +13,7 @@ export class GridPage {
         peopleService: PeopleService) {
 
         this._peopleService = peopleService;
-        this.query = new QueryModel(PersonMetadata, "FirstName", 10, () => {
+        this.query = new QueryModel(PersonMetadata, "FirstName", 5, () => {
             this.getData();
         });
     }
@@ -24,6 +25,14 @@ export class GridPage {
     dataSource: Person[];
 
     entityProps: LabeledItem<PropertyInfo>[] = PersonMetadata.properties;
+
+    pageSizes = [{ value: 5 }, { value: 10 }, { value: 20 }, { value: 50 }, { value: 100 }];
+    get pageSize() {
+        return array.firstOrDefault(this.pageSizes, p => p.value === this.query.pagination.pageSize);
+    }
+    set pageSize(size: { value: number }) {
+        this.query.pagination.pageSize = size.value;
+    }
 
     getData(): Promise<void> {
         return new Promise<void>((resolve, reject) => {

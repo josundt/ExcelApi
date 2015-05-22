@@ -61,7 +61,7 @@ export class QueryModel {
             if (this.pagination.pageNumber === 1) {
                 this._changeHandler();
             } else {
-                this.pagination.pageNumber = 1;
+                this.pagination.pageNumber = 1; // will trigger changehandler
             }
         } else {
             this._changeHandler();
@@ -167,16 +167,31 @@ export class Pagination {
 
     private _changeHandler: () => void;
 
+    private _pageNumberFloat: number = 1;
     private _pageSize: number;
-    get pageSize(): number { return this._pageSize; }
+    get pageSize() { return this._pageSize; }
+    set pageSize(value: number) {
+        value = this._ensureNumber(value);
+        if (value !== this._pageSize) {
+            let newPageNumber = Math.min(Math.max(this._pageNumber * (this._pageSize / value), 1), this.pageCount);
+            this._pageSize = value;
+            if (Math.floor(newPageNumber) === this.pageNumber) {
+                this._pageNumber = newPageNumber;
+                this._changeHandler();
+            } else {
+                this.pageNumber = newPageNumber; // will trigger change handler
+            }
+        }
+    }
 
     private _totalCount: number = null;
     get totalCount(): number { return this._totalCount };
-    set totalCount(value: number) { this._totalCount = value; }
+    set totalCount(value: number) { this._totalCount = this._ensureNumber(value); }
 
     private _pageNumber: number = 1;
-    get pageNumber(): number { return this._pageNumber };
+    get pageNumber(): number { return Math.floor(this._pageNumber); };
     set pageNumber(value: number) {
+        value = this._ensureNumber(value);
         if (value !== this._pageNumber) {
             this._pageNumber = value;
             this._changeHandler();
@@ -224,6 +239,14 @@ export class Pagination {
         return buttons;
     }
 
+    get firstRecordIndex(): number {
+        return (this._pageSize * this._pageNumber) - this._pageSize - 1;
+        
+    }
+
+    get lastRecordIndex(): number {
+        return Math.max(this._pageSize * this._pageNumber, this._totalCount);
+    }
 
     prev(): void {
         if (this.prevEnabled) {
@@ -238,10 +261,20 @@ export class Pagination {
     }
 
     gotoPage(pageNumber: number): void {
+        pageNumber = this._ensureNumber(pageNumber);
         if (pageNumber > 0 && pageNumber <= this.pageCount) {
             this.pageNumber = pageNumber;
         }
     }
 
+    private _ensureNumber(value: number | string): number {
+        var numValue: number;
+        if (typeof value === "string") {
+            numValue = parseInt(value, 10);
+        } else {
+            numValue = value;
+        };
+        return numValue;
+    }
 }
 

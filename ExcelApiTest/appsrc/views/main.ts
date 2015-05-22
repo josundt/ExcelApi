@@ -1,4 +1,4 @@
-﻿/// <reference path="../../typings/aurelia/aurelia-framework.d.ts" />
+﻿/// <reference path="../typings/aurelia/aurelia-framework.d.ts" />
 export function configure(aurelia: any) {
     aurelia.use
         .standardConfiguration()

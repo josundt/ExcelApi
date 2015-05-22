@@ -1,4 +1,4 @@
-﻿/// <reference path="../tsd.d.ts" />
+﻿/// <reference path="typings/tsd.d.ts" />
 
 /// <amd-dependency path="bootstrap"/>
 

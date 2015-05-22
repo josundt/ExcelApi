@@ -18,7 +18,7 @@ namespace ExcelApiTest.Controllers.OData
         }
 
         [NoCache]
-        [EnableQuery(PageSize = 20)]
+        [EnableQuery(PageSize = 100)]
         public IHttpActionResult Get()
         {
             return Ok(this._dataStore.Persons.AsQueryable());

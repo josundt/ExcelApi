@@ -1,4 +1,4 @@
-﻿import {computedFrom, inject} from 'aurelia-framework';
+﻿import {computedFrom, inject, customAttribute} from 'aurelia-framework';
 import {QueryModel} from "views/QueryModel";
 import {PeopleService} from "services/PeopleService";
 import {PropertyInfo, FilterParameter, FilterOperator, FilterOperators, LabeledItem} from "services/OData";
@@ -15,8 +15,8 @@ export default class CustomQueryPage {
     private _peopleService: PeopleService;
 
     outputTypes: LabeledItem<string>[] = [
-        { text: "Excel (xslx)", value: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" },
         { text: "CSV", value: "text/csv" },
+        { text: "Excel (.xslx)", value: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" },
         { text: "JSON", value: "application/json" },
         { text: "XML", value: "text/xml" }
     ];
@@ -58,5 +58,15 @@ export class QueryReadablifyValueConverter {
             result = decoded.split("&").join("\n");
         }
         return result;
+    }
+}
+
+@customAttribute("visible")
+@inject(Element)
+export class VisibleAttributeBinder {
+    constructor(private _element: HTMLAnchorElement) { }
+
+    valueChanged(newValue: boolean) {
+        this._element.style.display = newValue ? "" : "none";
     }
 }

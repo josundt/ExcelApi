@@ -1,30 +1,31 @@
 ﻿<template>
     <div class="container">
 
-        <h1 class="page-header">Grid Sample - OData WebAPI Output Format</h1>
+        <h3 class="page-header">Grid Demo</h3>
 
         <div>
-            <div class="row panel panel-default">
-                <div class="panel-heading" style="padding-right: 2px;">
-                    <button type="button" style="margin-top: -8px;" class="btn btn-success pull-right" title="Apply filter" click.delegate="getData()"><i class="glyphicon glyphicon-filter"></i></button>
-                    <button type="button" style="margin-top: -8px; margin-right: 1px;" class="btn btn-default pull-right" title="Add filter predicate" click.delegate="query.addFilter()"><i class="glyphicon glyphicon-plus"></i></button>
-                    <h3 class="panel-title">Filters:</h3>
-                </div>
-                <div class="panel-body" visible.bind="!!query.filters.length">
-                    <div class="col-md-3 form-group-sm well well-sm" repeat.for="filter of query.filters">
-                        <span class="small" visible.bind="$index > 0">...and...</span>
-                        <button type="button" class="close pull-right danger" click.delegate="$parent.query.removeFilter(filter)">&times;</button>
-                        <select class="form-control" value.bind="filter.property">
-                            <option repeat.for="prop of $parent.query.properties" model.bind="prop">${prop.text}</option>
-                        </select>
-                        <select class="form-control" value.bind="filter.operator">
-                            <option repeat.for="op of filter.operators" model.bind="op">${op.text}</option>
-                        </select>
-                        <input type="text" class="form-control" value.bind="filter.value"/>
+            <form class="form" submit.delegate="getData()">
+                <div class="row panel panel-default">
+                    <div class="panel-heading" style="padding-right: 2px;">
+                        <button type="button" style="margin-top: -8px;" class="btn btn-default pull-right" title="Apply filter"><i class="glyphicon glyphicon-filter"></i> Apply filter</button>
+                        <button type="button" style="margin-top: -8px; margin-right: 1px;" class="btn btn-link pull-right" title="Add filter predicate" click.delegate="query.addFilter()"><i class="glyphicon glyphicon-plus"></i></button>
+                        <h3 class="panel-title">Filters:</h3>
+                    </div>
+                    <div class="panel-body" visible.bind="!!query.filters.length">
+                        <div class="col-md-3 form-group-sm well well-sm" repeat.for="filter of query.filters">
+                            <span class="small" visible.bind="$index > 0">...and...</span>
+                            <button type="button" class="close pull-right danger" click.delegate="$parent.query.removeFilter(filter)">&times;</button>
+                            <select class="form-control" value.bind="filter.property">
+                                <option repeat.for="prop of $parent.query.properties" model.bind="prop">${prop.text}</option>
+                            </select>
+                            <select class="form-control" value.bind="filter.operator">
+                                <option repeat.for="op of filter.operators" model.bind="op">${op.text}</option>
+                            </select>
+                            <input type="text" class="form-control" value.bind="filter.value" />
+                        </div>
                     </div>
                 </div>
-            </div>
-
+            </form>
 
             <table class="table" style="table-layout: fixed;">
                 <thead>
@@ -42,10 +43,17 @@
                 </tbody>
                 <tfoot>
                 <tr>
-                    <td colspan.bind="entityProps.length">
+                    <td class="text-center" colspan.bind="entityProps.length">
+                        <div class="pull-left form-inline">
+                            <label>Page size:</label>
+                            <select class="form-control" value.bind="pageSize">
+                                <option repeat.for="size of pageSizes" model.bind="size">${size.value}</option>
+                            </select>
+                        </div>
+                        <em>Total records: ${query.pagination.totalCount}</em>
                         <div class="btn-group pull-right">
-                            <button type="button" class="btn btn-info" title="Download as Excel document" click.delegate="exportToExcel()"><i class="glyphicon glyphicon-save"></i> Download</button>
-                            <button type="button" class="btn btn-info" title="Download all pages as Excel document" click.delegate="exportToExcel(true)"><i class="glyphicon glyphicon-save"></i> Download all pages</button>
+                            <button type="button" class="btn btn-link" title="Download as Excel document" click.delegate="exportToExcel()"><i class="glyphicon glyphicon-save"></i> Download</button>
+                            <button type="button" class="btn btn-link" title="Download all pages as Excel document" click.delegate="exportToExcel(true)"><i class="glyphicon glyphicon-save"></i> Download all pages</button>
                         </div>
                     </td>
                 </tr>
