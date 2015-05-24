@@ -8,7 +8,8 @@ gulp.task("copy-lib", ["clean-lib"], function () {
         "jquery": "jquery/dist/jquery.{js,map}",
         "bootstrap": "bootstrap/dist/**/*.{js,map,css,ttf,svg,woff,eot}",
         "webcomponentsjs": "webcomponentsjs/**/*.{js,map}",
-        "bootstrap-switch": "bootstrap-switch/dist/**/*.{js,css}"
+        "bootstrap-switch": "bootstrap-switch/dist/**/*.{js,css}",
+        "font-awesome": "font-awesome/**/*.{css,map,ttf,svg,woff,woff2,eot}"
     };
 
     for (var destinationDir in bower) {

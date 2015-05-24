@@ -7,11 +7,11 @@
 
             <div class="row panel panel-default">
                 <div class="panel-heading" style="padding-right: 2px;">
-                    <button type="button" style="margin-top: -8px;" class="btn btn-default pull-right" title="Add sorting" click.delegate="query.addSorting()"><i class="glyphicon glyphicon-plus"></i></button>
+                    <button type="button" style="margin-top: -8px;" class="btn btn-default pull-right" title="Add sorting" click.delegate="query.addSorting()"><i class="fa fa-plus"></i></button>
                     <h3 class="panel-title">Sort criterias:</h3>
                 </div>
                 <div class="panel-body" visible.bind="!!query.sortings.length">
-                    <div class="col-md-3 form-group-sm well well-sm" repeat.for="sorting of query.sortings">
+                    <div class="col-lg-3 col-xs-6 form-group-sm well well-sm" repeat.for="sorting of query.sortings">
                         <span class="small" visible.bind="$index > 0">...then by...</span>
                         <button type="button" class="close pull-right danger" click.delegate="$parent.query.removeSorting(sorting)">&times;</button>
                         <select id="sortBy" class="form-control" value.bind="sorting.property">
@@ -26,11 +26,11 @@
 
             <div class="row panel panel-default">
                 <div class="panel-heading" style="padding-right: 2px;">
-                    <button type="button" style="margin-top: -8px;" class="btn btn-default pull-right" title="Add filter predicate" click.delegate="query.addFilter()"><i class="glyphicon glyphicon-plus"></i></button>
+                    <button type="button" style="margin-top: -8px;" class="btn btn-default pull-right" title="Add filter predicate" click.delegate="query.addFilter()"><i class="fa fa-plus"></i></button>
                     <h3 class="panel-title">Filter predicates:</h3>
                 </div>
                 <div class="panel-body" visible.bind="!!query.filters.length">
-                    <div class="col-md-3 form-group-sm well well-sm" repeat.for="filter of query.filters">
+                    <div class="col-lg-3 col-xs-6 form-group-sm well well-sm" repeat.for="filter of query.filters">
                         <span class="small" visible.bind="$index > 0">...and...</span>
                         <button type="button" class="close pull-right danger" click.delegate="$parent.query.removeFilter(filter)">&times;</button>
                         <select class="form-control" value.bind="filter.property">
@@ -39,19 +39,19 @@
                         <select class="form-control" value.bind="filter.operator">
                             <option repeat.for="op of filter.operators" model.bind="op">${op.text}</option>
                         </select>
-                        <input type="text" class="form-control" value.bind="filter.value" />
+                        <input type="text" class="form-control" value.bind="filter.value"/>
                     </div>
                 </div>
             </div>
 
             <div class="row">
-                <div class="col-md-6 form-group form-inline">
+                <div class="col-lg-3 col-xs-6 form-group form-inline">
                     <label for="outputformat">Output format</label>
                     <select id="outputformat" class="form-control" title="Output format" value.bind="outputType">
                         <option repeat.for="type of outputTypes" model.bind="type">${type.text}</option>
                     </select>
                 </div>
-                <div class="col-md-6">
+                <div class="col-lg-6 col-xs-12">
                     <button type="submit" class="btn btn-info pull-right">Get data!</button>
                 </div>
             </div>

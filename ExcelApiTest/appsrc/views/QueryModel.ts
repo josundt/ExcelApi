@@ -230,7 +230,7 @@ export class Pagination {
     @computedFrom("pageCount", "pageNumber")
     get buttons(): { pageNumber: number; active: boolean; }[] {
         let buttons: { pageNumber: number; active: boolean; }[] = [];
-        const maxButtons = 11;
+        const maxButtons = 5;
         let buttonCount = Math.min(maxButtons, this.pageCount);
         let buttonNumber = Math.min(this.pageCount - buttonCount + 1, Math.max(1, this.pageNumber - Math.floor(buttonCount / 2)));
         for (let i = buttonNumber; i < buttonCount + buttonNumber; i++) {

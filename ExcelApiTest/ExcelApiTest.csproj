@@ -177,6 +177,7 @@
     <Content Include="gulpfile.js" />
     <Content Include="index.html" />
     <Content Include="lib\bootstrap\css\bootstrap.css" />
+    <Content Include="lib\font-awesome\css\font-awesome.css" />
     <Content Include="packages.config" />
     <Content Include="bower.json" />
     <Content Include="package.json" />

@@ -19,6 +19,7 @@
     "requirejs": "~2.1.17",
     "bootstrap-switch": "~3.3.2",
     "webcomponentsjs": "~0.7.0",
-    "bluebird": "~2.9.25"
+    "bluebird": "~2.9.25",
+    "font-awesome": "~4.3.0"
   }
 }

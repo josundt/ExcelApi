@@ -7,12 +7,12 @@
             <form class="form" submit.delegate="getData()">
                 <div class="row panel panel-default">
                     <div class="panel-heading" style="padding-right: 2px;">
-                        <button type="button" style="margin-top: -8px;" class="btn btn-default pull-right" title="Apply filter"><i class="glyphicon glyphicon-filter"></i> Apply filter</button>
-                        <button type="button" style="margin-top: -8px; margin-right: 1px;" class="btn btn-link pull-right" title="Add filter predicate" click.delegate="query.addFilter()"><i class="glyphicon glyphicon-plus"></i></button>
+                        <button type="button" style="margin-top: -8px;" class="btn btn-default pull-right" title="Apply filter"><i class="fa fa-filter"></i> Apply filter</button>
+                        <button type="button" style="margin-top: -8px; margin-right: 1px;" class="btn btn-link pull-right" title="Add filter predicate" click.delegate="query.addFilter()"><i class="fa fa-plus"></i></button>
                         <h3 class="panel-title">Filters:</h3>
                     </div>
                     <div class="panel-body" visible.bind="!!query.filters.length">
-                        <div class="col-md-3 form-group-sm well well-sm" repeat.for="filter of query.filters">
+                        <div class="col-md-3 col-xs-6 form-group-sm well well-sm" repeat.for="filter of query.filters">
                             <span class="small" visible.bind="$index > 0">...and...</span>
                             <button type="button" class="close pull-right danger" click.delegate="$parent.query.removeFilter(filter)">&times;</button>
                             <select class="form-control" value.bind="filter.property">
@@ -27,7 +27,7 @@
                 </div>
             </form>
 
-            <table class="table" style="table-layout: fixed;">
+            <table class="table">
                 <thead>
                 <tr>
                     <th repeat.for="prop of entityProps" class="${$parent.query.sortings[0].property === prop ? 'active' : ''}">
@@ -42,23 +42,26 @@
                 </tr>
                 </tbody>
                 <tfoot>
-                <tr>
-                    <td class="text-center" colspan.bind="entityProps.length">
-                        <div class="pull-left form-inline">
-                            <label>Page size:</label>
-                            <select class="form-control" value.bind="pageSize">
-                                <option repeat.for="size of pageSizes" model.bind="size">${size.value}</option>
-                            </select>
-                        </div>
-                        <em>Total records: ${query.pagination.totalCount}</em>
-                        <div class="btn-group pull-right">
-                            <button type="button" class="btn btn-link" title="Download as Excel document" click.delegate="exportToExcel()"><i class="glyphicon glyphicon-save"></i> Download</button>
-                            <button type="button" class="btn btn-link" title="Download all pages as Excel document" click.delegate="exportToExcel(true)"><i class="glyphicon glyphicon-save"></i> Download all pages</button>
-                        </div>
-                    </td>
-                </tr>
                 </tfoot>
             </table>
+            <div class="clearfix">
+                <div class="pull-left form-inline">
+                    <label>Items per page:</label>
+                    <select class="form-control" value.bind="pageSize">
+                        <option repeat.for="size of pageSizes" model.bind="size">${size.value}</option>
+                    </select>
+                </div>
+                <div class="form-inline pull-right">
+                    <label>Total: </label>
+                    <em>${query.pagination.totalCount}</em>
+                </div>
+                <div>
+                    <div class="text-center">
+                        <button type="button" class="btn btn-link" title="Download as Excel document" click.delegate="exportToExcel()"><i class="fa fa-file-excel-o"></i> Download</button>
+                        <button type="button" class="btn btn-link" title="Download all pages as Excel document" click.delegate="exportToExcel(true)"><i class="fa fa-file-excel-o"></i> Download all pages</button>
+                    </div>
+                </div>
+            </div>
             <nav class="text-center" if.bind="!!query.pagination">
                 <ul class="pagination">
                     <li>
